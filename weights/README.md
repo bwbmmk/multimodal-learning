@@ -10,7 +10,7 @@
 | `cifar10/cifar10_best_model_1101_2111.pth` | CIFAR-10 | 667,914 | 早期 4 层卷积实验权重 |
 | `cifar10/cifar10_best_model_1101_2112.pth` | CIFAR-10 | 667,914 | 早期 4 层卷积实验权重 |
 | `cifar10/cifar10_best_model_1101_2149.pth` | CIFAR-10 | 669,838 | 加入 BatchNorm 等改动后的 4 层卷积权重 |
-| `cifar10/cifar10_best_model_1101_2230.pth` | CIFAR-10 | 5,805,104 | 扩展为 6 层卷积后的实验权重 |
+| `cifar10/cifar10_best_model_1101_2230.pth` | CIFAR-10 | 5,805,104 | 6 层卷积 + 50 轮实验的最终最佳权重，第 46 轮验证 89.86%，测试 89.22% |
 
 CIFAR-10 的实验版本经过了多次结构调整，文件保留原始时间戳命名，避免错误对应实验编号。具体实验结果见 [CIFAR-10 实验记录](../docs/cifar10-experiments.md)。
 
