@@ -13,6 +13,7 @@
 | 01 | MNIST 手写数字识别 | 已完成 | 测试准确率 **99.26%** |
 | 02 | CIFAR-10 彩色图像分类 | 已完成基础实验 | 测试准确率 **89.22%** |
 | 02+ | CIFAR-10 正则化与更长训练 | 已完成 | 50 轮 6 层 CNN，最佳验证 **89.86%** |
+| 02++ | CIFAR-10 浏览器演示（本地 + 手机） | 已完成 | ONNX + WASM，纯本机推理 |
 | 03 | ResNet 与迁移学习 | 计划中 | 从 CIFAR-10 过渡到预训练模型 |
 | 04 | MalImg 恶意软件图像分类 | 计划中 | 图像分类与类别不平衡实战 |
 | 05 | 多模态学习 | 计划中 | 图像 + 文本/元数据融合 |
@@ -62,7 +63,7 @@ multimodal-learning/
 │   ├── learning-journal.md         # 两个项目的推进过程与关键问答
 │   ├── mnist-notes.md              # MNIST 阶段的原理笔记
 │   ├── mnist-troubleshooting.md    # MNIST 踩坑与报错速查
-│   └── cifar10-experiments.md      # CIFAR-10 实验记录与过拟合分析
+│   └── cifar10-web-demo.md         # 浏览器部署：ONNX 导出、手机局域网、踩坑
 ├── projects/
 │   ├── mnist/
 │   │   ├── README.md
@@ -71,6 +72,16 @@ multimodal-learning/
 │   ├── cifar10/
 │   │   ├── README.md
 │   │   └── train.py
+│   └── cifar10-demo/               # 可直接运行的网页演示
+│       ├── README.md               # 打开方式、手机访问、连不上排查
+│       ├── index.html
+│       ├── styles.css
+│       ├── app.js
+│       ├── model.onnx              # 最佳验证模型导出（22 MB）
+│       ├── start.bat               # 一键启动
+│       ├── assets/                 # 10 张示例图 + 清单
+│       ├── vendor/                 # ONNX Runtime Web（本地，不联网）
+│       └── tools/                  # serve.py 局域网服务、export_model.py 导出
 ├── weights/
 │   ├── README.md
 │   ├── mnist/
@@ -102,6 +113,24 @@ python projects/cifar10/train.py
 
 两个训练脚本里的数据集路径目前是绝对路径，换机器运行前请先修改脚本中的 `path` 变量。代表性模型权重保存在 `weights/`；训练过程中新生成的其他权重仍按临时产物处理。
 
+## 跑起来看看
+
+训练完拿到 89.22%，但这个数字没有体感。`projects/cifar10-demo/` 把这个模型搬进了浏览器：选一张示例图或者拖入自己的照片，直接看它怎么猜、有多自信。
+
+```bash
+cd projects/cifar10-demo
+py tools/serve.py        # Windows 上也可以直接双击 start.bat
+```
+
+然后打开 <http://127.0.0.1:8000>。
+
+- **完全本机**：模型 `model.onnx` 和推理运行时 `vendor/` 都在仓库里，不联网、不上传图片
+- **手机也能用**：手机和电脑连同一个 Wi-Fi，扫页面上那张二维码就行（启动时按当前 IP 现生成）
+- **能看到 32×32**：原图和真正喂进模型的小图并排显示，很多"怎么猜错了"的疑问看一眼就明白了
+- 不能直接双击 `index.html`，浏览器不允许 `file://` 页面加载 WASM，必须走本地 HTTP 服务
+
+详细说明见 [演示目录 README](projects/cifar10-demo/README.md)，部署过程与踩坑见 [浏览器部署笔记](docs/cifar10-web-demo.md)。
+
 ## 文档索引
 
 - [环境配置](docs/environment.md)
@@ -110,6 +139,7 @@ python projects/cifar10/train.py
 - [MNIST 原理笔记](docs/mnist-notes.md)
 - [MNIST 踩坑与问答](docs/mnist-troubleshooting.md)
 - [CIFAR-10 实验记录](docs/cifar10-experiments.md)
+- [浏览器部署笔记](docs/cifar10-web-demo.md)
 
 ## 实验原则
 
@@ -118,3 +148,4 @@ python projects/cifar10/train.py
 - 保存验证集表现最好的模型，而不是最后一轮模型。
 - 关注验证/测试指标，不用追求接近 100% 的训练准确率。
 - 权重文件、数据集和缓存不进入 Git；只提交代码、文档和必要的示意图。
+- 例外只有一处：演示用的 `model.onnx` 与推理运行时随仓库提交，为的是 clone 下来就能直接跑起来。训练产生的其他权重仍按临时产物处理。

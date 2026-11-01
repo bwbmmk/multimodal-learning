@@ -16,6 +16,10 @@ data/
 !weights/*.pth
 !weights/**/*.pth
 
+# 本地演示运行时生成的文件（每次启动按当前 IP 重新生成）
+projects/cifar10-demo/assets/local.json
+projects/cifar10-demo/assets/qr.svg
+
 # 系统与本地文件
 .DS_Store
 Thumbs.db

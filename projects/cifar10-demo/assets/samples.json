@@ -1,0 +1,92 @@
+{
+  "inputShape": [
+    1,
+    3,
+    32,
+    32
+  ],
+  "normalization": "(pixel / 255 - 0.5) / 0.5",
+  "modelParameters": 5803082,
+  "samples": [
+    {
+      "file": "assets/samples/0-airplane.png",
+      "classIndex": 0,
+      "english": "airplane",
+      "chinese": "飞机",
+      "confidence": 0.997512,
+      "sourceIndex": 21
+    },
+    {
+      "file": "assets/samples/1-automobile.png",
+      "classIndex": 1,
+      "english": "automobile",
+      "chinese": "汽车",
+      "confidence": 0.999852,
+      "sourceIndex": 2396
+    },
+    {
+      "file": "assets/samples/2-bird.png",
+      "classIndex": 2,
+      "english": "bird",
+      "chinese": "鸟",
+      "confidence": 0.992579,
+      "sourceIndex": 1132
+    },
+    {
+      "file": "assets/samples/3-cat.png",
+      "classIndex": 3,
+      "english": "cat",
+      "chinese": "猫",
+      "confidence": 0.89221,
+      "sourceIndex": 4500
+    },
+    {
+      "file": "assets/samples/4-deer.png",
+      "classIndex": 4,
+      "english": "deer",
+      "chinese": "鹿",
+      "confidence": 0.996201,
+      "sourceIndex": 735
+    },
+    {
+      "file": "assets/samples/5-dog.png",
+      "classIndex": 5,
+      "english": "dog",
+      "chinese": "狗",
+      "confidence": 0.948951,
+      "sourceIndex": 5901
+    },
+    {
+      "file": "assets/samples/6-frog.png",
+      "classIndex": 6,
+      "english": "frog",
+      "chinese": "青蛙",
+      "confidence": 0.999578,
+      "sourceIndex": 1873
+    },
+    {
+      "file": "assets/samples/7-horse.png",
+      "classIndex": 7,
+      "english": "horse",
+      "chinese": "马",
+      "confidence": 0.996638,
+      "sourceIndex": 9186
+    },
+    {
+      "file": "assets/samples/8-ship.png",
+      "classIndex": 8,
+      "english": "ship",
+      "chinese": "船",
+      "confidence": 0.999981,
+      "sourceIndex": 6968
+    },
+    {
+      "file": "assets/samples/9-truck.png",
+      "classIndex": 9,
+      "english": "truck",
+      "chinese": "卡车",
+      "confidence": 0.999913,
+      "sourceIndex": 8044
+    }
+  ]
+}

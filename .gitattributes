@@ -1,3 +1,13 @@
 * text=auto
+
 *.png binary
+*.jpg binary
 *.pth binary
+
+# 演示目录：模型与推理运行时都是二进制，禁止换行符转换
+*.onnx binary
+*.wasm binary
+*.mjs binary
+
+# Windows 启动脚本必须是 CRLF，否则 cmd 解析会出错
+*.bat text eol=crlf
