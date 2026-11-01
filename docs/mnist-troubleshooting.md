@@ -1,5 +1,7 @@
 # 踩坑与问答记录
 
+> 导航：[仓库首页](../README.md) · [MNIST 项目](../projects/mnist/README.md) · [原理笔记](mnist-notes.md)
+
 从零手写 MNIST 过程中遇到并解决的问题汇总，按主题分类。每个条目记录「现象 → 原因 → 解决」，方便以后回查。
 
 ---
@@ -504,5 +506,5 @@ torch.manual_seed(42)
 4. **单张图要 `unsqueeze(0)`**：模型只接受四维输入
 5. **别忘了 `net.eval()` 和 `map_location='cpu'`**
 
-另外，当前 `mnist_self.py` 是**脚本**不是模块，`from mnist_self import Net` 会把 10 轮训练重跑一遍。
+另外，当前 `projects/mnist/train.py` 是**脚本**不是模块，`from train import Net` 会把 10 轮训练重跑一遍。
 部署前应先把 `Net` 抽到独立的 `model.py`。

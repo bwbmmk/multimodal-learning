@@ -5,11 +5,16 @@ __pycache__/
 .venv/
 venv/
 
-# 数据集 / 模型权重
+# 数据集 / 临时训练产物
 data/
 *.pt
 *.pth
 *.ckpt
+
+# 只归档 weights 下的代表性权重
+!weights/
+!weights/*.pth
+!weights/**/*.pth
 
 # 系统与本地文件
 .DS_Store

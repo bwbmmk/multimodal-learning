@@ -13,6 +13,7 @@ print('-------------------------------数据准备------------------------------
 
 transform = torchvision.transforms.Compose([torchvision.transforms.ToTensor(
 ), torchvision.transforms.Normalize(mean=[0.5], std=[0.5])])
+#该代码定义了一个图像预处理的转换器（transform），用于将输入的图像数据进行一系列的处理操作，以便于后续的模型训练和评估。
 # 如果是from torchvision import transforms，就可以直接写transform = transforms.Compose([...])
 # 本质上transforms是从torchvision中导入的一个模块，里面包含了很多图像处理的函数和类
 # compose是transforms中的一个类，Compose([...]) 接收一个“操作列表”，并按照列表顺序依次执行
@@ -182,7 +183,7 @@ def evaluate(model, loader, criterion, device):
 epochs = 10  # 循环轮次
 best_val_acc = 0.0  # 初始化最佳验证准确率
 # 保存最佳模型的路径,每一次都有一个新命名
-best_path = f'best_model_{datetime.now():%m%d_%H%M}.pth'
+best_path = f'mnist_best_model_{datetime.now():%m%d_%H%M}.pth'
 
 
 for epoch in range(epochs):

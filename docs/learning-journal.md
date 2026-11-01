@@ -1,0 +1,192 @@
+# 学习过程记录
+
+这份记录按时间顺序保留 MNIST 与 CIFAR-10 的推进过程、遇到的问题和关键结论。具体原理见对应的专题笔记。
+
+## 起点
+
+第一次系统地写 PyTorch 代码，从 MNIST 开始。目标不是复制一份能跑的教程，而是理解每个张量形状、每一步训练操作和每个指标的含义。
+
+## 2026-10-29：MNIST 项目
+
+### 完成内容
+
+- 使用 `torchvision.datasets.MNIST` 下载数据
+- `ToTensor()` + `Normalize([0.5], [0.5])`
+- 从 60,000 张训练集中划分 54,000 张训练、6,000 张验证
+- 搭建 3 层卷积 + 2 层全连接网络
+- 使用 `CrossEntropyLoss` 和 `Adam`
+- 每个 epoch 在验证集评估，保存最佳模型
+- 训练结束后加载最佳权重，在测试集评估一次
+
+### 结果
+
+| 指标 | 数值 |
+| --- | ---: |
+| 最佳验证准确率 | 99.20% |
+| 测试准确率 | 99.26% |
+| 测试损失 | 0.0243 |
+| 可训练参数 | 426,122 |
+
+### 关键问题
+
+- `Compose` 必须接收一个列表，不能把多个变换作为多个参数传入
+- `Dataset[i]` 返回 `(image, label)`，不能直接对整个元组取 `.shape`
+- `CrossEntropyLoss` 内部包含 LogSoftmax，模型末尾不再加 Softmax
+- `model.eval()` 与 `torch.no_grad()` 解决的是不同问题
+- 相对路径取决于当前工作目录，不等于脚本所在目录
+- 保存验证集最佳模型，而不是最后一轮模型
+
+完整排错见 [MNIST 踩坑与问答](mnist-troubleshooting.md)。
+
+## 2026-11-01：进入 CIFAR-10
+
+### 从 MNIST 迁移时改了哪些地方
+
+| 项目 | MNIST | CIFAR-10 |
+| --- | --- | --- |
+| 输入形状 | `[1, 28, 28]` | `[3, 32, 32]` |
+| 首层输入通道 | 1 | 3 |
+| 归一化参数 | 一个通道 | RGB 三个通道 |
+| 官方训练集 | 60,000 | 50,000 |
+| 验证集划分 | 54,000 / 6,000 | 45,000 / 5,000 |
+| 任务难度 | 较低 | 明显更高 |
+
+### 数据准备
+
+确认了：
+
+```python
+train_data[0][0].shape == torch.Size([3, 32, 32])
+```
+
+一个 batch 的形状是：
+
+```text
+images: [B, 3, 32, 32]
+labels: [B]
+```
+
+验证集仍然从官方训练集中划分，测试集保持独立。
+
+### 关键坑：覆盖了验证集
+
+曾经写成：
+
+```python
+train_set, val_set = random_split(train_data, [45000, 5000])
+val_set = torchvision.datasets.CIFAR10(path, train=True, transform=transform)
+```
+
+第二行把只有 5,000 个索引的验证子集整个覆盖成了 50,000 张完整训练集，导致训练样本出现在验证集中。
+
+正确写法是只替换验证子集内部的数据集对象：
+
+```python
+val_set.dataset = torchvision.datasets.CIFAR10(
+    path, train=True, transform=transform, download=False
+)
+```
+
+验证索引保持不变，样本还是原来的 5,000 张，只是改用无随机增强的预处理。
+
+### 第一版：明显过拟合
+
+结构为 4 层卷积，每层后接池化，无数据增强、无 BatchNorm、无 Dropout。
+
+第 20 轮附近：
+
+```text
+Train Acc: 97.84%
+Val Acc:   73.92%
+Val Loss:  1.4819
+```
+
+最佳验证准确率仅有 75.28%，测试准确率 74.85%。训练准确率继续上升，但验证损失从约 0.77 涨到 1.48，属于典型过拟合。
+
+### 第二版：加入正则化
+
+修改内容：
+
+- 训练集使用 `RandomCrop(32, padding=4)` 和 `RandomHorizontalFlip()`
+- 验证/测试集只使用确定性的 `ToTensor + Normalize`
+- 每个卷积层后加入 BatchNorm
+- 全连接层加入 Dropout(0.3)
+- Adam 改为 AdamW，`weight_decay=0.0001`
+- 训练 20 轮
+
+结果：
+
+| 指标 | 第一版 | 第二版 |
+| --- | ---: | ---: |
+| 最佳验证准确率 | 75.28% | **82.54%** |
+| 测试准确率 | 74.85% | **81.85%** |
+
+最佳验证准确率提升 7.26 个百分点，验证错误率从约 24.72% 降到约 17.46%。训练准确率虽然下降，但训练与验证的差距缩小到约 1.34 个百分点。
+
+结论：训练准确率下降不等于模型变差。之前的 98% 训练准确率是靠过拟合换来的。
+
+### 第三版：更长训练与结构扩展
+
+当前实验：
+
+- 50 个 epoch
+- 6 层卷积，采用 `Conv → BN → ReLU → Conv → BN → ReLU → Pool` 的双卷积块
+- 通道扩展为 16 → 32 → 64 → 128 → 256 → 512
+- `CosineAnnealingLR(T_max=50)`
+- 保持数据增强、Dropout、AdamW
+
+余弦调度公式：
+
+```text
+lr_t = eta_min + (eta_max - eta_min) / 2 * (1 + cos(t / T_max * pi))
+```
+
+在 50 轮内只使用余弦曲线从 `0` 到 `pi` 的下降半周期，学习率从 0.001 平滑降到 0。训练结果待补充。
+
+## 持续记录的问题
+
+### 验证函数里的 `torch.max`
+
+错误写法：
+
+```python
+predicted = torch.max(outputs.data, 1)
+```
+
+`torch.max(outputs, dim=1)` 返回 `(最大值, 索引)`，直接赋给 `predicted` 会得到两个结果，而不是类别索引。正确写法：
+
+```python
+_, predicted = torch.max(outputs, dim=1)
+```
+
+或者直接使用更清晰的：
+
+```python
+predicted = outputs.argmax(dim=1)
+```
+
+### 损失累加行末尾的逗号
+
+```python
+total_loss += loss.item() * images.size(0),
+```
+
+末尾的逗号不是排版问题，会改变表达式含义，应删除。
+
+### 模型通道数必须串联
+
+扩展网络时出现过 `conv2` 重复调用、BatchNorm 通道数与卷积输出不匹配、全连接输入维度仍写旧值等问题。修改网络后应逐段核对：
+
+```text
+输入通道 → 卷积输出通道 → BatchNorm 通道 → 下一层输入通道
+```
+
+并确认 `Flatten` 后的特征数与 `Linear.in_features` 一致。
+
+## 下一阶段
+
+1. 补齐 50 轮实验结果。
+2. 做 CIFAR-10 消融实验，确认每项改动的贡献。
+3. 学习 ResNet18 与迁移学习。
+4. 进入 MalImg，先做可靠的图像分类 baseline。
+5. 给 MalImg 增加文本或结构化元数据，尝试第一次真正的多模态融合。
