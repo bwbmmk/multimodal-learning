@@ -1,151 +1,103 @@
 # 多模态学习
 
-从图像分类基础出发，逐步走向 ResNet、恶意软件图像分类与多模态学习的学习仓库。
+从零学习 PyTorch：MNIST → CIFAR-10 CNN → 手写 ResNet18 → 迁移学习与图文检索。
 
-> GitHub 仓库名使用英文 `multimodal-learning`；项目中文名是「多模态学习」。
-
-这里记录的不只是最终代码，还包括数据预处理、训练/验证流程、过拟合分析、实验对比和踩坑过程。代码以容易读懂为目标，适合作为从零入门 PyTorch 的第一套完整练习。
+这里保留训练代码、实验日志、错误分析和可以在浏览器运行的模型。当前完成的是单模态图像分类；迁移学习、CLIP 和视觉语言模型仍是后续计划。
 
 ## 当前进度
 
-| 阶段 | 内容 | 状态 | 代表结果 |
-| --- | --- | --- | --- |
-| 01 | MNIST 手写数字识别 | 已完成 | 测试准确率 **99.26%** |
-| 02 | CIFAR-10 彩色图像分类 | 已完成基础实验 | 测试准确率 **89.22%** |
-| 02+ | CIFAR-10 正则化与更长训练 | 已完成 | 50 轮 6 层 CNN，最佳验证 **89.86%** |
-| 02++ | CIFAR-10 浏览器演示（本地 + 手机） | 已完成 | ONNX + WASM，纯本机推理 |
-| 03 | ResNet 与迁移学习 | 计划中 | 从 CIFAR-10 过渡到预训练模型 |
-| 04 | MalImg 恶意软件图像分类 | 计划中 | 图像分类与类别不平衡实战 |
-| 05 | 多模态学习 | 计划中 | 图像 + 文本/元数据融合 |
+| 内容 | 状态 | 结果 |
+| --- | --- | --- |
+| MNIST 手写数字识别 | 已完成 | 测试准确率 99.26% |
+| CIFAR-10 CNN 三轮实验 | 已完成 | 最佳验证 89.86%，测试 89.22% |
+| 手写 CIFAR ResNet18，从头训练 | 已完成 | **第 48 轮最佳验证 94.80%，测试 93.91%** |
+| 浏览器与手机演示 | 已更新为 ResNet18 | ONNX + WASM，本地推理，输入 32×32 |
+| ImageNet 预训练模型的冻结与微调 | 待完成 | 区分从头训练和迁移学习 |
+| CLIP 图文检索 | 待完成 | 真实图文配对、检索评测、错误分析 |
+| MalImg | 可选练习 | 不作为进入图文多模态的必经项目 |
 
-## 实验概览
+## 实验结果
 
-### MNIST
-
-- 3 层卷积 + 2 层全连接
-- 训练/验证/测试：54,000 / 6,000 / 10,000
-- `Adam(lr=0.001)` + `CrossEntropyLoss`
-- 最佳验证准确率 **99.20%**
-- 测试准确率 **99.26%**，测试损失 **0.0243**
-
-### CIFAR-10
-
-| 实验 | 关键变化 | 最佳验证准确率 | 测试准确率 |
+| 数据集 / 实验 | 主要设置 | 最佳验证准确率 | 测试准确率 |
 | --- | --- | ---: | ---: |
-| baseline | 4 层卷积，无数据增强/BN/Dropout | 75.28% | 74.85% |
-| regularized | 数据增强 + BatchNorm + Dropout + AdamW | 82.54% | 81.85% |
-| extended | 6 层卷积、50 轮、余弦退火 | **89.86%** | **89.22%** |
+| MNIST | 3 层 CNN，Adam | 99.20% | 99.26% |
+| CIFAR-10 baseline | 4 层 CNN，无增强/BN/Dropout | 75.28% | 74.85% |
+| CIFAR-10 regularized | 增强、BN、Dropout、AdamW | 82.54% | 81.85% |
+| CIFAR-10 extended | 6 层 CNN，50 轮，余弦退火 | 89.86% | 89.22% |
+| **CIFAR-10 ResNet18** | **手写残差块，SGD，50 轮，余弦退火** | **94.80%** | **93.91%** |
 
-baseline 在第 20 轮出现明显过拟合：训练准确率 **97.84%**，验证准确率只有 **73.92%**，验证损失从约 **0.77** 上升到 **1.48**。加入正则化后，训练与验证差距大幅缩小，验证准确率提升约 **7.26 个百分点**。
+最新实验保留 32×32 RGB 输入，入口是 3×3、stride=1，没有入口 MaxPool；四组残差块数量为 `[2,2,2,2]`，使用全局平均池化和 10 类分类层。参数量 **11,173,962**，随机初始化、全部参数参与训练，没有加载 ImageNet 权重，也没有使用标签平滑。
 
-extended 实验把训练轮数从 20 提到 50、把网络从 4 层加深到 6 层，测试准确率再提高 **7.37 个百分点**，错误率从 18.15% 降到 10.78%。剩余问题只是轻度过拟合：验证损失在第 29 轮后停在 `0.39~0.40`，训练损失继续降到 `0.12`，但最佳模型出现在第 46/50 轮，说明训练轮数设置基本合理。
+- 数据划分：45,000 训练 / 5,000 验证 / 10,000 测试。
+- 训练：随机裁剪、水平翻转；验证和测试不做随机增强。
+- 优化：SGD，`lr=0.1`、`momentum=0.9`、`weight_decay=5e-4`；余弦退火 50 轮，训练 batch size 128。
+- 第 48 轮验证损失 0.2019，验证准确率 94.80%；加载该轮权重后测试损失 **0.2212**、准确率 **93.91%**。
+- 末期训练准确率约 99.85%，存在泛化差距；但第 40→50 轮验证损失仍从 0.2413 降至 0.2015，没有持续恶化的证据。
 
-## 学习路线
+相对旧 CNN，测试准确率提高 4.69 个百分点。但网络、优化器和批量大小等同时改变，不能把全部增益归因于残差连接。以上是单次实验，不是多随机种子统计。固定了数据划分种子，尚未固定全部训练随机性。
 
-1. **图像分类基础**：张量形状、卷积、池化、训练五步、验证集与测试集的职责。
-2. **泛化能力**：数据增强、BatchNorm、Dropout、权重衰减、学习率调度。
-3. **ResNet 与迁移学习**：残差连接、预训练权重、冻结/解冻策略、微调。
-4. **MalImg 实战**：灰度恶意软件图像、类别不平衡、按家族划分数据、Macro-F1 与混淆矩阵。
-5. **多模态入门**：图像编码器 + 文本/元数据编码器、早期融合与晚期融合、对比学习。
-6. **工程化**：固定随机种子、保存最佳模型、记录实验、拆分 `model.py` / `train.py` / `predict.py`。
+原始输出和逐轮指标见 [ResNet 项目](projects/resnet18/README.md)、[训练日志](projects/resnet18/training-log.txt)、[指标 CSV](projects/resnet18/metrics.csv)。
 
-完整说明见 [学习路线](docs/learning-roadmap.md)。
+## 运行
 
-## 仓库结构
-
-```text
-multimodal-learning/
-├── README.md
-├── requirements.txt
-├── docs/
-│   ├── environment.md              # Windows + CUDA + PyTorch 环境配置
-│   ├── learning-roadmap.md         # 从 CNN 到多模态的学习路线
-│   ├── learning-journal.md         # 两个项目的推进过程与关键问答
-│   ├── mnist-notes.md              # MNIST 阶段的原理笔记
-│   ├── mnist-troubleshooting.md    # MNIST 踩坑与报错速查
-│   └── cifar10-web-demo.md         # 浏览器部署：ONNX 导出、手机局域网、踩坑
-├── projects/
-│   ├── mnist/
-│   │   ├── README.md
-│   │   ├── train.py
-│   │   └── assets/
-│   ├── cifar10/
-│   │   ├── README.md
-│   │   └── train.py
-│   └── cifar10-demo/               # 可直接运行的网页演示
-│       ├── README.md               # 打开方式、手机访问、连不上排查
-│       ├── index.html
-│       ├── styles.css
-│       ├── app.js
-│       ├── model.onnx              # 最佳验证模型导出（22 MB）
-│       ├── start.bat               # 一键启动
-│       ├── assets/                 # 10 张示例图 + 清单
-│       ├── vendor/                 # ONNX Runtime Web（本地，不联网）
-│       └── tools/                  # serve.py 局域网服务、export_model.py 导出
-├── weights/
-│   ├── README.md
-│   ├── mnist/
-│   └── cifar10/
-└── tools/
-    └── check_env.py                # PyTorch / CUDA 环境自检
-```
-
-## 快速开始
+安装 Python 训练依赖：
 
 ```bash
-git clone https://github.com/bwbmmk/multimodal-learning.git
-cd multimodal-learning
 pip install -r requirements.txt
-```
-
-运行环境自检：
-
-```bash
 python tools/check_env.py
 ```
-
-运行项目：
 
 ```bash
 python projects/mnist/train.py
 python projects/cifar10/train.py
+python projects/resnet18/train.py
 ```
 
-两个训练脚本里的数据集路径目前是绝对路径，换机器运行前请先修改脚本中的 `path` 变量。代表性模型权重保存在 `weights/`；训练过程中新生成的其他权重仍按临时产物处理。
+训练脚本仍保留学习时的数据路径，例如 `D:/ai/cifar10_data/`，换机器前需要修改 `path`。新训练产生的权重保存到运行时当前目录。代表性已训练权重位于 [weights](weights/README.md)。
 
-## 跑起来看看
-
-训练完拿到 89.22%，但这个数字没有体感。`projects/cifar10-demo/` 把这个模型搬进了浏览器：选一张示例图或者拖入自己的照片，直接看它怎么猜、有多自信。
+## 浏览器演示
 
 ```bash
 cd projects/cifar10-demo
-py tools/serve.py        # Windows 上也可以直接双击 start.bat
+py tools/serve.py
 ```
 
-然后打开 <http://127.0.0.1:8000>。
+Windows 也可以双击 `start.bat`，按终端显示的地址访问；默认端口可用时为 `http://127.0.0.1:8000`。手机与电脑连接同一 Wi-Fi 后按页面二维码访问，需要系统防火墙允许局域网连接。
 
-- **完全本机**：模型 `model.onnx` 和推理运行时 `vendor/` 都在仓库里，不联网、不上传图片
-- **手机也能用**：手机和电脑连同一个 Wi-Fi，扫页面上那张二维码就行（启动时按当前 IP 现生成）
-- **能看到 32×32**：原图和真正喂进模型的小图并排显示，很多"怎么猜错了"的疑问看一眼就明白了
-- 不能直接双击 `index.html`，浏览器不允许 `file://` 页面加载 WASM，必须走本地 HTTP 服务
+- 当前使用第 48 轮 ResNet18，ONNX **44,686,130 字节，约 42.6 MiB**。
+- 模型和 WASM 运行时均随仓库保存，图片不上传，推理发生在当前浏览器。
+- 保留原图、32×32 输入预览、裁剪/拉伸选项和 Top-5 结果。
+- 十张示例经过规则筛选以便展示，不能当作随机评测；模型只认识 CIFAR-10 的十类。
+- 浏览器使用版本化模型 URL，元数据禁止缓存，以免更换模型后加载旧资产。
 
-详细说明见 [演示目录 README](projects/cifar10-demo/README.md)，部署过程与踩坑见 [浏览器部署笔记](docs/cifar10-web-demo.md)。
+本次用十张 32×32 RGB 示例验证：前端张量与参考预处理逐元素一致，浏览器 WASM 与 PyTorch CPU 的 logits 最大绝对误差约 **3.82e-6**，十张预测类别均一致。该结果仅覆盖这组样本，不代表全部输入逐位一致。推理耗时由页面现场测量，不沿用旧模型的速度。
 
-## 文档索引
+详细操作见 [Demo README](projects/cifar10-demo/README.md)。
 
-- [环境配置](docs/environment.md)
+## 目录与记录
+
+```text
+projects/
+  mnist/           MNIST 训练
+  cifar10/         历史 CNN 训练
+  resnet18/        手写残差结构、训练、日志与指标
+  cifar10-demo/    当前 ResNet18 网页演示与导出脚本
+docs/              实验、学习路线、环境和部署记录
+weights/           代表性训练权重
+```
+
 - [学习路线](docs/learning-roadmap.md)
 - [学习过程记录](docs/learning-journal.md)
-- [MNIST 原理笔记](docs/mnist-notes.md)
-- [MNIST 踩坑与问答](docs/mnist-troubleshooting.md)
-- [CIFAR-10 实验记录](docs/cifar10-experiments.md)
-- [浏览器部署笔记](docs/cifar10-web-demo.md)
+- [CIFAR-10 历史实验](docs/cifar10-experiments.md)
+- [环境说明](docs/environment.md)
+- [浏览器部署记录](docs/cifar10-web-demo.md)
+- [MNIST 原理](docs/mnist-notes.md) / [踩坑记录](docs/mnist-troubleshooting.md)
 
-## 实验原则
+## 下一步
 
-- 训练集更新参数，验证集选择模型，测试集只在最后使用。
-- 先建立可复现的 baseline，再每次只改变一个因素。
-- 保存验证集表现最好的模型，而不是最后一轮模型。
-- 关注验证/测试指标，不用追求接近 100% 的训练准确率。
-- 权重文件、数据集和缓存不进入 Git；只提交代码、文档和必要的示意图。
-- 例外只有一处：演示用的 `model.onnx` 与推理运行时随仓库提交，为的是 clone 下来就能直接跑起来。训练产生的其他权重仍按临时产物处理。
+1. 分析错误样本；标签平滑仅作可选单变量对照，尚未实现或验证收益。
+2. 学习预训练模型的冻结与微调，核对输入预处理与可训练参数。
+3. 做 CLIP 文本搜图：固定评测集、报告检索指标、分析失败案例。
+4. 基础并行学习 Python、数据结构算法、线性代数与 Linux/Git。先做一个可解释、可复现的项目，再扩展新方向。
+
+训练集更新参数，验证集决定方案；测试集用于方案确定后的最终评估。数据集、缓存和一般训练产物不提交，仅归档代表性权重及运行 Demo 必需的模型资产。

@@ -1,3 +1,5 @@
+> 当前演示已于 2026-11-03 切换为手写 ResNet18。下文早期 CNN 的耗时和验证描述属于历史记录，不应当作新模型的实测结果。当前导出及验证见文末。
+
 # CIFAR-10 网页演示：把模型搬到浏览器
 
 训练跑完、测试集 89.22%，但"准确率"这个数字本身没有体感。
@@ -24,13 +26,13 @@ PyTorch 模型不能直接在浏览器里跑。可选路线有三条：
 ```python
 torch.onnx.export(
     model, dummy_input, "model.onnx",
-    input_names=["input"], output_names=["logits"],
+    input_names=["images"], output_names=["logits"],
     opset_version=17,        # 17 对 Conv/BatchNorm 的支持最稳
-    dynamic_axes={"input": {0: "batch"}},
+    dynamic_axes={"images": {0: "batch"}, "logits": {0: "batch"}},
 )
 ```
 
-`opset_version` 不能随手写最新版：onnxruntime-web 的 WASM 后端对高版本 opset 支持滞后，17 是目前兼容性最好的点。
+`opset_version` 不能随手写最新版：onnxruntime-web 的 WASM 后端对高版本 opset 支持滞后，这里保留已验证的 opset 17，并不意味着它适合所有模型或始终最优。
 `dynamic_axes` 把 batch 维放开，是为了以后能一次推多张图，虽然这个 Demo 一次只推一张。
 
 导出前必须 `model.eval()`。忘了这一步，BatchNorm 会用当前 batch 的统计量而不是训练时累积的 running_mean/var，导出结果和训练对不上——而且不报错，只是预测变差，很难查。
@@ -166,3 +168,15 @@ ort.env.wasm.wasmPaths = new URL('vendor/', document.baseURI).href;
 给它一张人像、风景或美食，它也会很自信地归到某一类。**这不是 bug，是它根本没见过别的类别。** 拿自己的照片玩的时候，看置信度分布比看最终结论有意思得多——一张"狗 51% / 猫 44%"的图，往往正好卡在模型的决策边界上。
 
 下一步如果要做真正的多模态，这个"只在封闭类别集里做选择"的局限就是必须要跨过去的东西。
+
+
+## 2026-11-03：ResNet18 替换
+
+- 输入仍为 RGB 32×32，NCHW，归一化 `(pixel/255-0.5)/0.5`；输出键 `logits`。
+- 参数 11,173,962；ONNX 44,686,130 字节（42.6 MiB），opset 17。
+- 实际训练权重：第 48 轮最佳，验证 94.80%，测试 93.91%，测试损失 0.2212。
+- `tools/export_model.py` 导入独立模型定义，严格加载 checkpoint，导出并重新生成示例及哈希元数据。
+- `samples.json` 使用 no-store；模型 URL 携带内容哈希，避免沿用旧 CNN 缓存。
+- 本次十张 RGB 图的实际前端预处理与参考输入一致；WASM/PyTorch CPU logits 最大绝对误差约 3.82e-6，类别全部一致。参数量相同本身不能证明数值一致。
+- 展示图是从正确预测中规则筛选的，十张正确不等于总体准确率。旧 6～10ms 耗时不再作为当前速度承诺，具体耗时由页面显示。
+- 手机真实设备、不同浏览器和任意上传图的全覆盖数值验证不在本次结论内。

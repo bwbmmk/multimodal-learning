@@ -1,4 +1,6 @@
 import argparse
+import hashlib
+import importlib.util
 import json
 from pathlib import Path
 
@@ -22,43 +24,20 @@ CLASSES = [
 ]
 
 
-class Net(torch.nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.conv1 = torch.nn.Conv2d(3, 16, 3, 1, 1)
-        self.conv2 = torch.nn.Conv2d(16, 32, 3, 1, 1)
-        self.conv3 = torch.nn.Conv2d(32, 64, 3, 1, 1)
-        self.conv4 = torch.nn.Conv2d(64, 128, 3, 1, 1)
-        self.conv5 = torch.nn.Conv2d(128, 256, 3, 1, 1)
-        self.conv6 = torch.nn.Conv2d(256, 512, 3, 1, 1)
-        self.pool = torch.nn.MaxPool2d(2, 2)
-        self.flatten = torch.nn.Flatten()
-        self.fc1 = torch.nn.Linear(512 * 4 * 4, 512)
-        self.fc2 = torch.nn.Linear(512, 64)
-        self.fc3 = torch.nn.Linear(64, 10)
-        self.bn1 = torch.nn.BatchNorm2d(16)
-        self.bn2 = torch.nn.BatchNorm2d(32)
-        self.bn3 = torch.nn.BatchNorm2d(64)
-        self.bn4 = torch.nn.BatchNorm2d(128)
-        self.bn5 = torch.nn.BatchNorm2d(256)
-        self.bn6 = torch.nn.BatchNorm2d(512)
-        self.relu = torch.nn.ReLU()
-        self.dropout = torch.nn.Dropout(p=0.3)
-
-    def forward(self, x):
-        x = self.pool(self.relu(self.bn2(self.conv2(
-            self.relu(self.bn1(self.conv1(x)))
-        ))))
-        x = self.pool(self.relu(self.bn4(self.conv4(
-            self.relu(self.bn3(self.conv3(x)))
-        ))))
-        x = self.pool(self.relu(self.bn6(self.conv6(
-            self.relu(self.bn5(self.conv5(x)))
-        ))))
-        x = self.flatten(x)
-        x = self.dropout(self.relu(self.fc1(x)))
-        x = self.dropout(self.relu(self.fc2(x)))
-        return self.fc3(x)
+def load_model_definition():
+    # 仓库结构与原本地学习目录都支持；只导入模型，绝不导入会启动训练的脚本。
+    project_dir = Path(__file__).resolve().parents[2]
+    candidates = [
+        project_dir / "resnet18" / "model.py",
+        project_dir / "CIFAR-10" / "resnet_model.py",
+    ]
+    for path in candidates:
+        if path.is_file():
+            spec = importlib.util.spec_from_file_location("cifar_resnet_model", path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            return module.ResNet18()
+    raise FileNotFoundError("找不到 ResNet 模型定义，请保留 projects/resnet18/model.py")
 
 
 def main():
@@ -66,14 +45,18 @@ def main():
     parser.add_argument("--weights", required=True)
     parser.add_argument("--data-root", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--best-epoch", type=int, default=None)
+    parser.add_argument("--validation-accuracy", type=float, default=None)
+    parser.add_argument("--reported-test-accuracy", type=float, default=None)
     args = parser.parse_args()
+    checkpoint_sha256 = hashlib.sha256(Path(args.weights).read_bytes()).hexdigest()
 
     output_dir = Path(args.output)
     samples_dir = output_dir / "assets" / "samples"
     samples_dir.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model = Net().to(device)
+    model = load_model_definition().to(device)
     state_dict = torch.load(args.weights, map_location=device, weights_only=True)
     model.load_state_dict(state_dict)
     model.eval()
@@ -92,6 +75,8 @@ def main():
         dynamo=False,
     )
 
+    model_sha256 = hashlib.sha256(onnx_path.read_bytes()).hexdigest()
+
     transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),
@@ -99,9 +84,11 @@ def main():
     test_data = torchvision.datasets.CIFAR10(
         root=args.data_root, train=False, transform=transform, download=False
     )
-    # 收集每一类所有预测正确的样本，稍后挑选“接近该类中位数置信度”的那张，
-    # 避免清一色 100% 的极端样本，让示例更能代表模型的真实表现。
+    # 收集预测正确的样本，按该类正确样本置信度的 25% 分位选择展示图。
+    # 这些是人工规则筛选的展示样本，不是随机抽样，也不能用来估计准确率。
     correct_by_class = [[] for _ in range(10)]
+    total_correct = 0
+    total_loss = 0.0
 
     with torch.no_grad():
         for start in range(0, len(test_data), 256):
@@ -110,7 +97,11 @@ def main():
                 for index in range(start, min(start + 256, len(test_data)))
             ]).to(device)
             labels = test_data.targets[start:start + images.shape[0]]
-            probabilities = torch.softmax(model(images), dim=1).cpu()
+            logits = model(images)
+            targets = torch.tensor(labels, device=device)
+            total_loss += torch.nn.functional.cross_entropy(logits, targets, reduction="sum").item()
+            total_correct += (logits.argmax(dim=1) == targets).sum().item()
+            probabilities = torch.softmax(logits, dim=1).cpu()
             predictions = probabilities.argmax(dim=1).tolist()
             for offset, (label, prediction) in enumerate(zip(labels, predictions)):
                 if prediction != label:
@@ -124,7 +115,7 @@ def main():
         if not items:
             raise RuntimeError(f"没有找到类别 {class_index} 的正确示例")
         # 用 25% 分位的置信度作为目标：模型整体很自信，取低分位才能选到
-        # 更能反映真实难度、又确实预测正确的样本。
+        # 预测正确且置信度处于该分位的展示样本；不能代表总体难度。
         confidences = sorted(confidence for _, confidence in items)
         target = confidences[int(len(confidences) * 0.25)]
         index, confidence = min(items, key=lambda item: abs(item[1] - target))
@@ -139,7 +130,7 @@ def main():
         image = Image.fromarray(test_data.data[item["sourceIndex"]])
         image.save(samples_dir / filename)
         samples.append({
-            "file": f"assets/samples/{filename}",
+            "file": f"assets/samples/{filename}?v=" + checkpoint_sha256[:12],
             "classIndex": class_index,
             "english": english,
             "chinese": chinese,
@@ -149,6 +140,18 @@ def main():
         print(f"{chinese}: test[{item['sourceIndex']}], confidence={item['confidence']:.4f}")
 
     metadata = {
+        "modelName": "CIFAR ResNet18",
+        "modelVersion": "resnet18-" + checkpoint_sha256[:12],
+        "checkpointSha256": checkpoint_sha256,
+        "modelSha256": model_sha256,
+        "modelFile": "model.onnx?v=" + model_sha256[:12],
+        "modelBytes": onnx_path.stat().st_size,
+        "bestEpoch": args.best_epoch,
+        "validationAccuracy": args.validation_accuracy,
+        "reportedTestAccuracy": args.reported_test_accuracy,
+        "exportTestAccuracy": total_correct / len(test_data),
+        "exportTestLoss": total_loss / len(test_data),
+        "sampleSelection": "correct predictions near per-class confidence 25th percentile; curated display only",
         "inputShape": [1, 3, 32, 32],
         "normalization": "(pixel / 255 - 0.5) / 0.5",
         "modelParameters": sum(parameter.numel() for parameter in model.parameters()),

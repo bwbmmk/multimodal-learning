@@ -332,19 +332,18 @@ async function showPhoneAccess() {
 async function init() {
   showPhoneAccess();
   try {
-    setModelStatus('loading', '正在加载 22 MB 模型', '加载模型中');
-    const metadataPromise = fetch('assets/samples.json').then((response) => {
+    setModelStatus('loading', '正在加载 ResNet18 模型', '加载模型中');
+    const metadataPromise = fetch('assets/samples.json', { cache: 'no-store' }).then((response) => {
       if (!response.ok) throw new Error('示例图片清单读取失败');
       return response.json();
     });
 
     ort.env.wasm.wasmPaths = new URL('vendor/', document.baseURI).href;
     ort.env.wasm.numThreads = 1;
-    const sessionPromise = ort.InferenceSession.create('./model.onnx', {
+    const metadata = await metadataPromise;
+    const session = await ort.InferenceSession.create(metadata.modelFile || './model.onnx', {
       executionProviders: ['wasm'],
     });
-
-    const [metadata, session] = await Promise.all([metadataPromise, sessionPromise]);
     state.metadata = metadata;
     state.session = session;
     renderSamples();

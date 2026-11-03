@@ -1,4 +1,16 @@
 {
+  "modelName": "CIFAR ResNet18",
+  "modelVersion": "resnet18-b95de7c4e694",
+  "checkpointSha256": "b95de7c4e694f62b4ffa88e7fcc812128b7a2d2ee45f70a66ff98fe48f26f739",
+  "modelSha256": "a9d41ee3a0f06a5f458315e524d58b05ecf81f53967cf76fc2eaeebbbe788c0b",
+  "modelFile": "model.onnx?v=a9d41ee3a0f0",
+  "modelBytes": 44686130,
+  "bestEpoch": 48,
+  "validationAccuracy": 0.948,
+  "reportedTestAccuracy": 0.9391,
+  "exportTestAccuracy": 0.9391,
+  "exportTestLoss": 0.22115300855636597,
+  "sampleSelection": "correct predictions near per-class confidence 25th percentile; curated display only",
   "inputShape": [
     1,
     3,
@@ -6,87 +18,87 @@
     32
   ],
   "normalization": "(pixel / 255 - 0.5) / 0.5",
-  "modelParameters": 5803082,
+  "modelParameters": 11173962,
   "samples": [
     {
-      "file": "assets/samples/0-airplane.png",
+      "file": "assets/samples/0-airplane.png?v=b95de7c4e694",
       "classIndex": 0,
       "english": "airplane",
       "chinese": "飞机",
-      "confidence": 0.997512,
-      "sourceIndex": 21
+      "confidence": 0.998088,
+      "sourceIndex": 7541
     },
     {
-      "file": "assets/samples/1-automobile.png",
+      "file": "assets/samples/1-automobile.png?v=b95de7c4e694",
       "classIndex": 1,
       "english": "automobile",
       "chinese": "汽车",
-      "confidence": 0.999852,
-      "sourceIndex": 2396
+      "confidence": 0.999181,
+      "sourceIndex": 1564
     },
     {
-      "file": "assets/samples/2-bird.png",
+      "file": "assets/samples/2-bird.png?v=b95de7c4e694",
       "classIndex": 2,
       "english": "bird",
       "chinese": "鸟",
-      "confidence": 0.992579,
-      "sourceIndex": 1132
+      "confidence": 0.9973,
+      "sourceIndex": 8473
     },
     {
-      "file": "assets/samples/3-cat.png",
+      "file": "assets/samples/3-cat.png?v=b95de7c4e694",
       "classIndex": 3,
       "english": "cat",
       "chinese": "猫",
-      "confidence": 0.89221,
-      "sourceIndex": 4500
+      "confidence": 0.993048,
+      "sourceIndex": 5007
     },
     {
-      "file": "assets/samples/4-deer.png",
+      "file": "assets/samples/4-deer.png?v=b95de7c4e694",
       "classIndex": 4,
       "english": "deer",
       "chinese": "鹿",
-      "confidence": 0.996201,
-      "sourceIndex": 735
+      "confidence": 0.997932,
+      "sourceIndex": 4608
     },
     {
-      "file": "assets/samples/5-dog.png",
+      "file": "assets/samples/5-dog.png?v=b95de7c4e694",
       "classIndex": 5,
       "english": "dog",
       "chinese": "狗",
-      "confidence": 0.948951,
-      "sourceIndex": 5901
+      "confidence": 0.994996,
+      "sourceIndex": 9707
     },
     {
-      "file": "assets/samples/6-frog.png",
+      "file": "assets/samples/6-frog.png?v=b95de7c4e694",
       "classIndex": 6,
       "english": "frog",
       "chinese": "青蛙",
-      "confidence": 0.999578,
-      "sourceIndex": 1873
+      "confidence": 0.999003,
+      "sourceIndex": 4345
     },
     {
-      "file": "assets/samples/7-horse.png",
+      "file": "assets/samples/7-horse.png?v=b95de7c4e694",
       "classIndex": 7,
       "english": "horse",
       "chinese": "马",
-      "confidence": 0.996638,
-      "sourceIndex": 9186
+      "confidence": 0.998922,
+      "sourceIndex": 4924
     },
     {
-      "file": "assets/samples/8-ship.png",
+      "file": "assets/samples/8-ship.png?v=b95de7c4e694",
       "classIndex": 8,
       "english": "ship",
       "chinese": "船",
-      "confidence": 0.999981,
-      "sourceIndex": 6968
+      "confidence": 0.999485,
+      "sourceIndex": 265
     },
     {
-      "file": "assets/samples/9-truck.png",
+      "file": "assets/samples/9-truck.png?v=b95de7c4e694",
       "classIndex": 9,
       "english": "truck",
       "chinese": "卡车",
-      "confidence": 0.999913,
-      "sourceIndex": 8044
+      "confidence": 0.999065,
+      "sourceIndex": 3395
     }
   ]
 }
