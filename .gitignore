@@ -30,3 +30,6 @@ Thumbs.db
 .vscode/*
 # 只保留共享的 VSCode 配置
 !.vscode/settings.json
+
+# VSCode Code Runner 运行选区时生成的临时文件
+tempCodeRunnerFile.py
