@@ -1,15 +1,15 @@
 {
   "modelName": "CIFAR ResNet18",
-  "modelVersion": "resnet18-b95de7c4e694",
-  "checkpointSha256": "b95de7c4e694f62b4ffa88e7fcc812128b7a2d2ee45f70a66ff98fe48f26f739",
-  "modelSha256": "a9d41ee3a0f06a5f458315e524d58b05ecf81f53967cf76fc2eaeebbbe788c0b",
-  "modelFile": "model.onnx?v=a9d41ee3a0f0",
+  "modelVersion": "resnet18-55a84f66c39d",
+  "checkpointSha256": "55a84f66c39d2a2609d100ec1cdc11ad34c353d398d190432a8a2a836f5f32c3",
+  "modelSha256": "0918638121b6ff6fac63f34ff8055625d576b9864f20656edd9e217fa8dbeb31",
+  "modelFile": "model.onnx?v=0918638121b6",
   "modelBytes": 44686130,
-  "bestEpoch": 48,
-  "validationAccuracy": 0.948,
-  "reportedTestAccuracy": 0.9391,
-  "exportTestAccuracy": 0.9391,
-  "exportTestLoss": 0.22115300855636597,
+  "bestEpoch": 98,
+  "validationAccuracy": 0.961,
+  "reportedTestAccuracy": 0.9529,
+  "exportTestAccuracy": 0.9529,
+  "exportTestLoss": 0.2297037759780884,
   "sampleSelection": "correct predictions near per-class confidence 25th percentile; curated display only",
   "inputShape": [
     1,
@@ -17,88 +17,88 @@
     32,
     32
   ],
-  "normalization": "(pixel / 255 - 0.5) / 0.5",
+  "normalization": "(pixel / 255 - mean) / std, mean=(0.4914,0.4822,0.4465), std=(0.2470,0.2435,0.2616)",
   "modelParameters": 11173962,
   "samples": [
     {
-      "file": "assets/samples/0-airplane.png?v=b95de7c4e694",
+      "file": "assets/samples/0-airplane.png?v=55a84f66c39d",
       "classIndex": 0,
       "english": "airplane",
       "chinese": "飞机",
-      "confidence": 0.998088,
-      "sourceIndex": 7541
+      "confidence": 0.895025,
+      "sourceIndex": 4081
     },
     {
-      "file": "assets/samples/1-automobile.png?v=b95de7c4e694",
+      "file": "assets/samples/1-automobile.png?v=55a84f66c39d",
       "classIndex": 1,
       "english": "automobile",
       "chinese": "汽车",
-      "confidence": 0.999181,
-      "sourceIndex": 1564
+      "confidence": 0.907311,
+      "sourceIndex": 4431
     },
     {
-      "file": "assets/samples/2-bird.png?v=b95de7c4e694",
+      "file": "assets/samples/2-bird.png?v=55a84f66c39d",
       "classIndex": 2,
       "english": "bird",
       "chinese": "鸟",
-      "confidence": 0.9973,
-      "sourceIndex": 8473
+      "confidence": 0.902391,
+      "sourceIndex": 3473
     },
     {
-      "file": "assets/samples/3-cat.png?v=b95de7c4e694",
+      "file": "assets/samples/3-cat.png?v=55a84f66c39d",
       "classIndex": 3,
       "english": "cat",
       "chinese": "猫",
-      "confidence": 0.993048,
-      "sourceIndex": 5007
+      "confidence": 0.890624,
+      "sourceIndex": 9281
     },
     {
-      "file": "assets/samples/4-deer.png?v=b95de7c4e694",
+      "file": "assets/samples/4-deer.png?v=55a84f66c39d",
       "classIndex": 4,
       "english": "deer",
       "chinese": "鹿",
-      "confidence": 0.997932,
-      "sourceIndex": 4608
+      "confidence": 0.900171,
+      "sourceIndex": 6902
     },
     {
-      "file": "assets/samples/5-dog.png?v=b95de7c4e694",
+      "file": "assets/samples/5-dog.png?v=55a84f66c39d",
       "classIndex": 5,
       "english": "dog",
       "chinese": "狗",
-      "confidence": 0.994996,
-      "sourceIndex": 9707
+      "confidence": 0.888459,
+      "sourceIndex": 1329
     },
     {
-      "file": "assets/samples/6-frog.png?v=b95de7c4e694",
+      "file": "assets/samples/6-frog.png?v=55a84f66c39d",
       "classIndex": 6,
       "english": "frog",
       "chinese": "青蛙",
-      "confidence": 0.999003,
-      "sourceIndex": 4345
+      "confidence": 0.901909,
+      "sourceIndex": 2846
     },
     {
-      "file": "assets/samples/7-horse.png?v=b95de7c4e694",
+      "file": "assets/samples/7-horse.png?v=55a84f66c39d",
       "classIndex": 7,
       "english": "horse",
       "chinese": "马",
-      "confidence": 0.998922,
-      "sourceIndex": 4924
+      "confidence": 0.906383,
+      "sourceIndex": 1956
     },
     {
-      "file": "assets/samples/8-ship.png?v=b95de7c4e694",
+      "file": "assets/samples/8-ship.png?v=55a84f66c39d",
       "classIndex": 8,
       "english": "ship",
       "chinese": "船",
-      "confidence": 0.999485,
-      "sourceIndex": 265
+      "confidence": 0.899034,
+      "sourceIndex": 1369
     },
     {
-      "file": "assets/samples/9-truck.png?v=b95de7c4e694",
+      "file": "assets/samples/9-truck.png?v=55a84f66c39d",
       "classIndex": 9,
       "english": "truck",
       "chinese": "卡车",
-      "confidence": 0.999065,
-      "sourceIndex": 3395
+      "confidence": 0.903091,
+      "sourceIndex": 7431
     }
   ]
 }

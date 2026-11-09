@@ -144,12 +144,15 @@ function imageToTensor() {
   const pixels = context.getImageData(0, 0, 32, 32).data;
   const data = new Float32Array(3 * 32 * 32);
   const channelSize = 32 * 32;
+  // 必须与训练时的 Normalize 一致：CIFAR-10 三通道真实均值/标准差
+  const mean = [0.4914, 0.4822, 0.4465];
+  const std = [0.2470, 0.2435, 0.2616];
 
   for (let pixel = 0; pixel < channelSize; pixel += 1) {
     const rgbaIndex = pixel * 4;
-    data[pixel] = (pixels[rgbaIndex] / 255 - 0.5) / 0.5;
-    data[channelSize + pixel] = (pixels[rgbaIndex + 1] / 255 - 0.5) / 0.5;
-    data[channelSize * 2 + pixel] = (pixels[rgbaIndex + 2] / 255 - 0.5) / 0.5;
+    data[pixel] = (pixels[rgbaIndex] / 255 - mean[0]) / std[0];
+    data[channelSize + pixel] = (pixels[rgbaIndex + 1] / 255 - mean[1]) / std[1];
+    data[channelSize * 2 + pixel] = (pixels[rgbaIndex + 2] / 255 - mean[2]) / std[2];
   }
 
   return new ort.Tensor('float32', data, [1, 3, 32, 32]);

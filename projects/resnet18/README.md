@@ -10,6 +10,8 @@
 - `CIFAR-10_resnet18_train.py`：训练脚本（数据管道、混合精度、checkpoint），有 `if __name__ == "__main__"` 主入口保护。
 - `training-log.txt`：50 轮基线的原始训练输出。
 - `metrics.csv`：从基线日志提取的 50 轮指标。
+- `training-log-100ep.txt`：100 轮改进版的训练输出（tqdm 进度条只保留统计字段）。
+- `metrics-100ep.csv`：100 轮改进版的逐轮指标。
 
 ```bash
 python projects/resnet18/CIFAR-10_resnet18_train.py

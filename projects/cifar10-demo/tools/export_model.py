@@ -23,6 +23,13 @@ CLASSES = [
     ("truck", "卡车"),
 ]
 
+# 必须与训练时的 Normalize 一致（CIFAR-10 三通道真实均值/标准差）
+CIFAR_MEAN = [0.4914, 0.4822, 0.4465]
+CIFAR_STD = [0.2470, 0.2435, 0.2616]
+NORMALIZATION_DESC = (
+    "(pixel / 255 - mean) / std, mean=(0.4914,0.4822,0.4465), std=(0.2470,0.2435,0.2616)"
+)
+
 
 def load_model_definition():
     # 只导入模型定义，绝不导入会启动训练的脚本。
@@ -78,7 +85,7 @@ def main():
 
     transform = transforms.Compose([
         transforms.ToTensor(),
-        transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),
+        transforms.Normalize(CIFAR_MEAN, CIFAR_STD),
     ])
     test_data = torchvision.datasets.CIFAR10(
         root=args.data_root, train=False, transform=transform, download=False
@@ -152,7 +159,7 @@ def main():
         "exportTestLoss": total_loss / len(test_data),
         "sampleSelection": "correct predictions near per-class confidence 25th percentile; curated display only",
         "inputShape": [1, 3, 32, 32],
-        "normalization": "(pixel / 255 - 0.5) / 0.5",
+        "normalization": NORMALIZATION_DESC,
         "modelParameters": sum(parameter.numel() for parameter in model.parameters()),
         "samples": samples,
     }

@@ -46,7 +46,7 @@
 
 相对旧 CNN，ResNet 基线测试提高 4.69 个百分点；以上都是单次实验，不是多随机种子统计。
 
-原始输出和逐轮指标见 [ResNet 项目](projects/resnet18/README.md)、[训练日志](projects/resnet18/training-log.txt)、[指标 CSV](projects/resnet18/metrics.csv)（均为 50 轮基线）。
+原始输出和逐轮指标见 [ResNet 项目](projects/resnet18/README.md)：50 轮基线为 [训练日志](projects/resnet18/training-log.txt) / [指标 CSV](projects/resnet18/metrics.csv)，100 轮改进版为 [训练日志](projects/resnet18/training-log-100ep.txt) / [指标 CSV](projects/resnet18/metrics-100ep.csv)。
 
 ## 运行
 
@@ -74,13 +74,13 @@ py tools/serve.py
 
 Windows 也可以双击 `start.bat`，按终端显示的地址访问；默认端口可用时为 `http://127.0.0.1:8000`。手机与电脑连接同一 Wi-Fi 后按页面二维码访问，需要系统防火墙允许局域网连接。
 
-- 当前使用第 48 轮 ResNet18，ONNX **44,686,130 字节，约 42.6 MiB**。
+- 当前使用第 98 轮 ResNet18，ONNX **44,686,130 字节，约 42.6 MiB**。
 - 模型和 WASM 运行时均随仓库保存，图片不上传，推理发生在当前浏览器。
 - 保留原图、32×32 输入预览、裁剪/拉伸选项和 Top-5 结果。
 - 十张示例经过规则筛选以便展示，不能当作随机评测；模型只认识 CIFAR-10 的十类。
 - 浏览器使用版本化模型 URL，元数据禁止缓存，以免更换模型后加载旧资产。
 
-本次用十张 32×32 RGB 示例验证：前端张量与参考预处理逐元素一致，浏览器 WASM 与 PyTorch CPU 的 logits 最大绝对误差约 **3.82e-6**，十张预测类别均一致。该结果仅覆盖这组样本，不代表全部输入逐位一致。推理耗时由页面现场测量，不沿用旧模型的速度。
+本次导出用十张 32×32 RGB 示例做了数值对照：ONNX 与 PyTorch CPU 的 logits 最大绝对误差约 **5.96e-7**，十张预测类别均一致；浏览器端一致性脚本（`projects/cifar10-demo/verification/`）已按新模型和新预处理更新，需要在本地重新跑一次。该结果仅覆盖这组样本，不代表全部输入逐位一致。推理耗时由页面现场测量，不沿用旧模型的速度。
 
 详细操作见 [Demo README](projects/cifar10-demo/README.md)。
 

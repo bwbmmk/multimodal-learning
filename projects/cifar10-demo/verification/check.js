@@ -13,9 +13,11 @@
       drawModelInput(image);
       const input = imageToTensor();
       let inputError = 0;
+      const mean = [0.4914, 0.4822, 0.4465];
+      const std = [0.2470, 0.2435, 0.2616];
       for (let p = 0; p < 1024; p++) {
         for (let c = 0; c < 3; c++) {
-          const expected = Math.fround((fixture.rgb[p * 3 + c] / 255 - 0.5) / 0.5);
+          const expected = Math.fround((fixture.rgb[p * 3 + c] / 255 - mean[c]) / std[c]);
           inputError = Math.max(inputError, Math.abs(input.data[c * 1024 + p] - expected));
         }
       }

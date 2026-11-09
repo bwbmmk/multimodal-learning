@@ -1,0 +1,453 @@
+CIFAR-10 ResNet18 100 轮改进版训练日志
+来源：终端输出整理（tqdm 进度条只保留统计字段，进度条图形已省略）
+配置：100 epoch，batch 64，SGD lr=0.1/momentum=0.9/wd=5e-4，CosineAnnealingLR(T_max=100)
+      CrossEntropyLoss(label_smoothing=0.1)，RandomCrop/HFlip/RandomErasing，真实 mean/std，AMP(fp16)
+
+using device:cuda
+-------------------------------数据准备----------------------------------------
+训练集数量： 45000
+验证集数量： 5000
+测试集数量： 10000
+图片形状： torch.Size([3, 32, 32])
+------------------------------------------模型构建完毕，开始训练模型------------------------------------------------
+
+Epoch 1/100: 704/704 [01:03<00:00, 11.06batch/s, loss=2.0229]
+Epoch [1/100], Train Loss: 1.9929, Train Acc: 0.3044
+Epoch [1/100], Val Loss: 1.7671, Val Acc: 0.4006
+目前最好的模型已保存，准确率为：0.4006
+
+Epoch 2/100: 704/704 [00:14<00:00, 47.00batch/s, loss=2.2017]
+Epoch [2/100], Train Loss: 1.6850, Train Acc: 0.4474
+Epoch [2/100], Val Loss: 1.5265, Val Acc: 0.5248
+目前最好的模型已保存，准确率为：0.5248
+
+Epoch 3/100: 704/704 [00:14<00:00, 50.05batch/s, loss=1.3982]
+Epoch [3/100], Train Loss: 1.4831, Train Acc: 0.5525
+Epoch [3/100], Val Loss: 1.3912, Val Acc: 0.5886
+目前最好的模型已保存，准确率为：0.5886
+
+Epoch 4/100: 704/704 [00:13<00:00, 51.29batch/s, loss=0.8957]
+Epoch [4/100], Train Loss: 1.3602, Train Acc: 0.6108
+Epoch [4/100], Val Loss: 1.3780, Val Acc: 0.6062
+目前最好的模型已保存，准确率为：0.6062
+
+Epoch 5/100: 704/704 [00:13<00:00, 51.20batch/s, loss=1.6542]
+Epoch [5/100], Train Loss: 1.2701, Train Acc: 0.6558
+Epoch [5/100], Val Loss: 1.4255, Val Acc: 0.6076
+目前最好的模型已保存，准确率为：0.6076
+
+Epoch 6/100: 704/704 [00:13<00:00, 51.09batch/s, loss=1.4999]
+Epoch [6/100], Train Loss: 1.2034, Train Acc: 0.6901
+Epoch [6/100], Val Loss: 1.1271, Val Acc: 0.7230
+目前最好的模型已保存，准确率为：0.7230
+
+Epoch 7/100: 704/704 [00:13<00:00, 50.52batch/s, loss=1.5660]
+Epoch [7/100], Train Loss: 1.1587, Train Acc: 0.7125
+Epoch [7/100], Val Loss: 1.3434, Val Acc: 0.6404
+
+Epoch 8/100: 704/704 [00:13<00:00, 51.35batch/s, loss=0.6838]
+Epoch [8/100], Train Loss: 1.1286, Train Acc: 0.7244
+Epoch [8/100], Val Loss: 1.1568, Val Acc: 0.7106
+
+Epoch 9/100: 704/704 [00:13<00:00, 51.12batch/s, loss=1.0350]
+Epoch [9/100], Train Loss: 1.1010, Train Acc: 0.7370
+Epoch [9/100], Val Loss: 1.1763, Val Acc: 0.7106
+
+Epoch 10/100: 704/704 [00:13<00:00, 51.24batch/s, loss=0.7615]
+Epoch [10/100], Train Loss: 1.0864, Train Acc: 0.7438
+Epoch [10/100], Val Loss: 1.0659, Val Acc: 0.7530
+目前最好的模型已保存，准确率为：0.7530
+
+Epoch 11/100: 704/704 [00:13<00:00, 51.39batch/s, loss=1.1260]
+Epoch [11/100], Train Loss: 1.0741, Train Acc: 0.7482
+Epoch [11/100], Val Loss: 1.1867, Val Acc: 0.7108
+
+Epoch 12/100: 704/704 [00:13<00:00, 51.18batch/s, loss=0.9891]
+Epoch [12/100], Train Loss: 1.0627, Train Acc: 0.7562
+Epoch [12/100], Val Loss: 1.1579, Val Acc: 0.7132
+
+Epoch 13/100: 704/704 [00:13<00:00, 51.31batch/s, loss=1.5369]
+Epoch [13/100], Train Loss: 1.0458, Train Acc: 0.7608
+Epoch [13/100], Val Loss: 1.1944, Val Acc: 0.7084
+
+Epoch 14/100: 704/704 [00:13<00:00, 51.37batch/s, loss=1.0313]
+Epoch [14/100], Train Loss: 1.0339, Train Acc: 0.7687
+Epoch [14/100], Val Loss: 1.0055, Val Acc: 0.7870
+目前最好的模型已保存，准确率为：0.7870
+
+Epoch 15/100: 704/704 [00:13<00:00, 51.42batch/s, loss=1.0359]
+Epoch [15/100], Train Loss: 1.0261, Train Acc: 0.7724
+Epoch [15/100], Val Loss: 1.2426, Val Acc: 0.6858
+
+Epoch 16/100: 704/704 [00:13<00:00, 51.58batch/s, loss=1.1284]
+Epoch [16/100], Train Loss: 1.0192, Train Acc: 0.7764
+Epoch [16/100], Val Loss: 0.9987, Val Acc: 0.7858
+
+Epoch 17/100: 704/704 [00:13<00:00, 50.78batch/s, loss=1.6785]
+Epoch [17/100], Train Loss: 1.0111, Train Acc: 0.7779
+Epoch [17/100], Val Loss: 0.9511, Val Acc: 0.8042
+目前最好的模型已保存，准确率为：0.8042
+
+Epoch 18/100: 704/704 [00:14<00:00, 49.66batch/s, loss=1.5554]
+Epoch [18/100], Train Loss: 1.0062, Train Acc: 0.7833
+Epoch [18/100], Val Loss: 1.0693, Val Acc: 0.7534
+
+Epoch 19/100: 704/704 [00:14<00:00, 49.92batch/s, loss=1.1756]
+Epoch [19/100], Train Loss: 1.0092, Train Acc: 0.7805
+Epoch [19/100], Val Loss: 0.9670, Val Acc: 0.8056
+目前最好的模型已保存，准确率为：0.8056
+
+Epoch 20/100: 704/704 [00:13<00:00, 51.13batch/s, loss=1.0185]
+Epoch [20/100], Train Loss: 0.9996, Train Acc: 0.7858
+Epoch [20/100], Val Loss: 1.0423, Val Acc: 0.7598
+
+Epoch 21/100: 704/704 [00:13<00:00, 51.18batch/s, loss=1.2874]
+Epoch [21/100], Train Loss: 0.9919, Train Acc: 0.7876
+Epoch [21/100], Val Loss: 1.1227, Val Acc: 0.7460
+
+Epoch 22/100: 704/704 [00:13<00:00, 51.03batch/s, loss=1.2816]
+Epoch [22/100], Train Loss: 0.9878, Train Acc: 0.7895
+Epoch [22/100], Val Loss: 0.9993, Val Acc: 0.7900
+
+Epoch 23/100: 704/704 [00:13<00:00, 50.97batch/s, loss=1.1423]
+Epoch [23/100], Train Loss: 0.9813, Train Acc: 0.7910
+Epoch [23/100], Val Loss: 0.9530, Val Acc: 0.8058
+目前最好的模型已保存，准确率为：0.8058
+
+Epoch 24/100: 704/704 [00:13<00:00, 50.92batch/s, loss=1.7309]
+Epoch [24/100], Train Loss: 0.9779, Train Acc: 0.7941
+Epoch [24/100], Val Loss: 1.3257, Val Acc: 0.6772
+
+Epoch 25/100: 704/704 [00:13<00:00, 50.98batch/s, loss=1.1800]
+Epoch [25/100], Train Loss: 0.9702, Train Acc: 0.7977
+Epoch [25/100], Val Loss: 1.0442, Val Acc: 0.7624
+
+Epoch 26/100: 704/704 [00:13<00:00, 51.19batch/s, loss=1.4377]
+Epoch [26/100], Train Loss: 0.9702, Train Acc: 0.7983
+Epoch [26/100], Val Loss: 0.9250, Val Acc: 0.8184
+目前最好的模型已保存，准确率为：0.8184
+
+Epoch 27/100: 704/704 [00:13<00:00, 50.78batch/s, loss=0.8489]
+Epoch [27/100], Train Loss: 0.9675, Train Acc: 0.7987
+Epoch [27/100], Val Loss: 0.9451, Val Acc: 0.8102
+
+Epoch 28/100: 704/704 [00:13<00:00, 50.63batch/s, loss=1.0854]
+Epoch [28/100], Train Loss: 0.9588, Train Acc: 0.8019
+Epoch [28/100], Val Loss: 1.1375, Val Acc: 0.7388
+
+Epoch 29/100: 704/704 [00:13<00:00, 51.12batch/s, loss=1.6012]
+Epoch [29/100], Train Loss: 0.9530, Train Acc: 0.8054
+Epoch [29/100], Val Loss: 1.0642, Val Acc: 0.7598
+
+Epoch 30/100: 704/704 [00:13<00:00, 50.99batch/s, loss=0.7360]
+Epoch [30/100], Train Loss: 0.9564, Train Acc: 0.8040
+Epoch [30/100], Val Loss: 0.9525, Val Acc: 0.8056
+
+Epoch 31/100: 704/704 [00:13<00:00, 50.91batch/s, loss=0.8602]
+Epoch [31/100], Train Loss: 0.9495, Train Acc: 0.8054
+Epoch [31/100], Val Loss: 1.0848, Val Acc: 0.7506
+
+Epoch 32/100: 704/704 [00:13<00:00, 50.81batch/s, loss=0.9160]
+Epoch [32/100], Train Loss: 0.9453, Train Acc: 0.8073
+Epoch [32/100], Val Loss: 0.9058, Val Acc: 0.8244
+目前最好的模型已保存，准确率为：0.8244
+
+Epoch 33/100: 704/704 [00:13<00:00, 50.88batch/s, loss=0.8989]
+Epoch [33/100], Train Loss: 0.9342, Train Acc: 0.8120
+Epoch [33/100], Val Loss: 0.9390, Val Acc: 0.8130
+
+Epoch 34/100: 704/704 [00:13<00:00, 51.07batch/s, loss=1.0249]
+Epoch [34/100], Train Loss: 0.9358, Train Acc: 0.8109
+Epoch [34/100], Val Loss: 0.9767, Val Acc: 0.8034
+
+Epoch 35/100: 704/704 [00:13<00:00, 50.45batch/s, loss=0.8063]
+Epoch [35/100], Train Loss: 0.9323, Train Acc: 0.8140
+Epoch [35/100], Val Loss: 0.9079, Val Acc: 0.8298
+目前最好的模型已保存，准确率为：0.8298
+
+Epoch 36/100: 704/704 [00:13<00:00, 50.52batch/s, loss=1.1329]
+Epoch [36/100], Train Loss: 0.9210, Train Acc: 0.8190
+Epoch [36/100], Val Loss: 0.9110, Val Acc: 0.8248
+
+Epoch 37/100: 704/704 [00:13<00:00, 51.09batch/s, loss=1.4369]
+Epoch [37/100], Train Loss: 0.9212, Train Acc: 0.8182
+Epoch [37/100], Val Loss: 0.9535, Val Acc: 0.8006
+
+Epoch 38/100: 704/704 [00:13<00:00, 51.07batch/s, loss=1.0430]
+Epoch [38/100], Train Loss: 0.9213, Train Acc: 0.8175
+Epoch [38/100], Val Loss: 1.1165, Val Acc: 0.7468
+
+Epoch 39/100: 704/704 [00:13<00:00, 51.31batch/s, loss=0.8715]
+Epoch [39/100], Train Loss: 0.9106, Train Acc: 0.8250
+Epoch [39/100], Val Loss: 0.9174, Val Acc: 0.8250
+
+Epoch 40/100: 704/704 [00:13<00:00, 50.88batch/s, loss=0.9340]
+Epoch [40/100], Train Loss: 0.9079, Train Acc: 0.8252
+Epoch [40/100], Val Loss: 0.9161, Val Acc: 0.8256
+
+Epoch 41/100: 704/704 [00:13<00:00, 50.90batch/s, loss=0.6816]
+Epoch [41/100], Train Loss: 0.9077, Train Acc: 0.8242
+Epoch [41/100], Val Loss: 0.9101, Val Acc: 0.8248
+
+Epoch 42/100: 704/704 [00:13<00:00, 50.90batch/s, loss=1.5167]
+Epoch [42/100], Train Loss: 0.8951, Train Acc: 0.8294
+Epoch [42/100], Val Loss: 0.9078, Val Acc: 0.8232
+
+Epoch 43/100: 704/704 [00:13<00:00, 50.58batch/s, loss=1.1993]
+Epoch [43/100], Train Loss: 0.8918, Train Acc: 0.8316
+Epoch [43/100], Val Loss: 0.8742, Val Acc: 0.8410
+目前最好的模型已保存，准确率为：0.8410
+
+Epoch 44/100: 704/704 [00:13<00:00, 50.88batch/s, loss=0.9023]
+Epoch [44/100], Train Loss: 0.8928, Train Acc: 0.8310
+Epoch [44/100], Val Loss: 0.9307, Val Acc: 0.8142
+
+Epoch 45/100: 704/704 [00:13<00:00, 50.95batch/s, loss=0.9903]
+Epoch [45/100], Train Loss: 0.8854, Train Acc: 0.8336
+Epoch [45/100], Val Loss: 0.8162, Val Acc: 0.8638
+目前最好的模型已保存，准确率为：0.8638
+
+Epoch 46/100: 704/704 [00:13<00:00, 50.65batch/s, loss=0.8397]
+Epoch [46/100], Train Loss: 0.8790, Train Acc: 0.8364
+Epoch [46/100], Val Loss: 0.8832, Val Acc: 0.8350
+
+Epoch 47/100: 704/704 [00:13<00:00, 51.09batch/s, loss=1.5887]
+Epoch [47/100], Train Loss: 0.8715, Train Acc: 0.8397
+Epoch [47/100], Val Loss: 0.7978, Val Acc: 0.8682
+目前最好的模型已保存，准确率为：0.8682
+
+Epoch 48/100: 704/704 [00:13<00:00, 50.37batch/s, loss=1.3006]
+Epoch [48/100], Train Loss: 0.8637, Train Acc: 0.8453
+Epoch [48/100], Val Loss: 0.8443, Val Acc: 0.8522
+
+Epoch 49/100: 704/704 [00:13<00:00, 50.43batch/s, loss=0.8297]
+Epoch [49/100], Train Loss: 0.8663, Train Acc: 0.8418
+Epoch [49/100], Val Loss: 0.8575, Val Acc: 0.8478
+
+Epoch 50/100: 704/704 [00:13<00:00, 50.88batch/s, loss=1.4373]
+Epoch [50/100], Train Loss: 0.8584, Train Acc: 0.8461
+Epoch [50/100], Val Loss: 0.9146, Val Acc: 0.8174
+
+Epoch 51/100: 704/704 [00:13<00:00, 50.36batch/s, loss=0.9352]
+Epoch [51/100], Train Loss: 0.8536, Train Acc: 0.8484
+Epoch [51/100], Val Loss: 0.8259, Val Acc: 0.8586
+
+Epoch 52/100: 704/704 [00:15<00:00, 45.20batch/s, loss=0.8027]
+Epoch [52/100], Train Loss: 0.8478, Train Acc: 0.8506
+Epoch [52/100], Val Loss: 0.8888, Val Acc: 0.8332
+
+Epoch 53/100: 704/704 [00:17<00:00, 40.80batch/s, loss=0.8494]
+Epoch [53/100], Train Loss: 0.8402, Train Acc: 0.8527
+Epoch [53/100], Val Loss: 0.8107, Val Acc: 0.8652
+
+Epoch 54/100: 704/704 [00:15<00:00, 46.80batch/s, loss=1.3173]
+Epoch [54/100], Train Loss: 0.8374, Train Acc: 0.8566
+Epoch [54/100], Val Loss: 0.8324, Val Acc: 0.8564
+
+Epoch 55/100: 704/704 [00:15<00:00, 46.84batch/s, loss=0.6854]
+Epoch [55/100], Train Loss: 0.8286, Train Acc: 0.8588
+Epoch [55/100], Val Loss: 0.8222, Val Acc: 0.8626
+
+Epoch 56/100: 704/704 [00:14<00:00, 49.79batch/s, loss=0.8662]
+Epoch [56/100], Train Loss: 0.8221, Train Acc: 0.8610
+Epoch [56/100], Val Loss: 0.8243, Val Acc: 0.8620
+
+Epoch 57/100: 704/704 [00:14<00:00, 49.13batch/s, loss=1.6553]
+Epoch [57/100], Train Loss: 0.8176, Train Acc: 0.8646
+Epoch [57/100], Val Loss: 0.7776, Val Acc: 0.8782
+目前最好的模型已保存，准确率为：0.8782
+
+Epoch 58/100: 704/704 [00:15<00:00, 44.65batch/s, loss=0.7639]
+Epoch [58/100], Train Loss: 0.8119, Train Acc: 0.8658
+Epoch [58/100], Val Loss: 0.8576, Val Acc: 0.8492
+
+Epoch 59/100: 704/704 [00:15<00:00, 45.92batch/s, loss=0.9608]
+Epoch [59/100], Train Loss: 0.8061, Train Acc: 0.8687
+Epoch [59/100], Val Loss: 0.7923, Val Acc: 0.8736
+
+Epoch 60/100: 704/704 [00:14<00:00, 48.77batch/s, loss=0.8234]
+Epoch [60/100], Train Loss: 0.7989, Train Acc: 0.8716
+Epoch [60/100], Val Loss: 0.7846, Val Acc: 0.8770
+
+Epoch 61/100: 704/704 [00:14<00:00, 50.20batch/s, loss=1.4081]
+Epoch [61/100], Train Loss: 0.7936, Train Acc: 0.8744
+Epoch [61/100], Val Loss: 0.7464, Val Acc: 0.8940
+目前最好的模型已保存，准确率为：0.8940
+
+Epoch 62/100: 704/704 [00:13<00:00, 51.02batch/s, loss=0.9088]
+Epoch [62/100], Train Loss: 0.7899, Train Acc: 0.8737
+Epoch [62/100], Val Loss: 0.8492, Val Acc: 0.8504
+
+Epoch 63/100: 704/704 [00:13<00:00, 51.05batch/s, loss=0.5891]
+Epoch [63/100], Train Loss: 0.7767, Train Acc: 0.8805
+Epoch [63/100], Val Loss: 0.7489, Val Acc: 0.8908
+
+Epoch 64/100: 704/704 [00:13<00:00, 50.93batch/s, loss=0.9338]
+Epoch [64/100], Train Loss: 0.7686, Train Acc: 0.8838
+Epoch [64/100], Val Loss: 0.7400, Val Acc: 0.8992
+目前最好的模型已保存，准确率为：0.8992
+
+Epoch 65/100: 704/704 [00:13<00:00, 51.02batch/s, loss=0.7278]
+Epoch [65/100], Train Loss: 0.7644, Train Acc: 0.8863
+Epoch [65/100], Val Loss: 0.7783, Val Acc: 0.8798
+
+Epoch 66/100: 704/704 [00:13<00:00, 50.96batch/s, loss=0.8920]
+Epoch [66/100], Train Loss: 0.7583, Train Acc: 0.8888
+Epoch [66/100], Val Loss: 0.7405, Val Acc: 0.8958
+
+Epoch 67/100: 704/704 [00:13<00:00, 50.83batch/s, loss=0.5848]
+Epoch [67/100], Train Loss: 0.7469, Train Acc: 0.8959
+Epoch [67/100], Val Loss: 0.7666, Val Acc: 0.8870
+
+Epoch 68/100: 704/704 [00:13<00:00, 50.94batch/s, loss=0.9390]
+Epoch [68/100], Train Loss: 0.7436, Train Acc: 0.8955
+Epoch [68/100], Val Loss: 0.7273, Val Acc: 0.9000
+目前最好的模型已保存，准确率为：0.9000
+
+Epoch 69/100: 704/704 [00:13<00:00, 51.17batch/s, loss=0.9289]
+Epoch [69/100], Train Loss: 0.7416, Train Acc: 0.8965
+Epoch [69/100], Val Loss: 0.7172, Val Acc: 0.9060
+目前最好的模型已保存，准确率为：0.9060
+
+Epoch 70/100: 704/704 [00:13<00:00, 51.00batch/s, loss=1.0701]
+Epoch [70/100], Train Loss: 0.7323, Train Acc: 0.8997
+Epoch [70/100], Val Loss: 0.7370, Val Acc: 0.8964
+
+Epoch 71/100: 704/704 [00:13<00:00, 50.79batch/s, loss=0.6353]
+Epoch [71/100], Train Loss: 0.7242, Train Acc: 0.9048
+Epoch [71/100], Val Loss: 0.7255, Val Acc: 0.9054
+
+Epoch 72/100: 704/704 [00:13<00:00, 50.73batch/s, loss=0.6096]
+Epoch [72/100], Train Loss: 0.7109, Train Acc: 0.9089
+Epoch [72/100], Val Loss: 0.7362, Val Acc: 0.8968
+
+Epoch 73/100: 704/704 [00:13<00:00, 50.73batch/s, loss=0.9828]
+Epoch [73/100], Train Loss: 0.7093, Train Acc: 0.9102
+Epoch [73/100], Val Loss: 0.7009, Val Acc: 0.9168
+目前最好的模型已保存，准确率为：0.9168
+
+Epoch 74/100: 704/704 [00:13<00:00, 50.86batch/s, loss=0.6364]
+Epoch [74/100], Train Loss: 0.6971, Train Acc: 0.9156
+Epoch [74/100], Val Loss: 0.7012, Val Acc: 0.9172
+目前最好的模型已保存，准确率为：0.9172
+
+Epoch 75/100: 704/704 [00:13<00:00, 50.69batch/s, loss=0.8773]
+Epoch [75/100], Train Loss: 0.6884, Train Acc: 0.9192
+Epoch [75/100], Val Loss: 0.6826, Val Acc: 0.9228
+目前最好的模型已保存，准确率为：0.9228
+
+Epoch 76/100: 704/704 [00:13<00:00, 51.08batch/s, loss=0.7542]
+Epoch [76/100], Train Loss: 0.6788, Train Acc: 0.9243
+Epoch [76/100], Val Loss: 0.6869, Val Acc: 0.9226
+
+Epoch 77/100: 704/704 [00:13<00:00, 50.96batch/s, loss=0.5777]
+Epoch [77/100], Train Loss: 0.6703, Train Acc: 0.9279
+Epoch [77/100], Val Loss: 0.6783, Val Acc: 0.9254
+目前最好的模型已保存，准确率为：0.9254
+
+Epoch 78/100: 704/704 [00:13<00:00, 51.02batch/s, loss=0.9564]
+Epoch [78/100], Train Loss: 0.6644, Train Acc: 0.9301
+Epoch [78/100], Val Loss: 0.6521, Val Acc: 0.9368
+目前最好的模型已保存，准确率为：0.9368
+
+Epoch 79/100: 704/704 [00:13<00:00, 50.80batch/s, loss=0.7826]
+Epoch [79/100], Train Loss: 0.6549, Train Acc: 0.9342
+Epoch [79/100], Val Loss: 0.6646, Val Acc: 0.9292
+
+Epoch 80/100: 704/704 [00:13<00:00, 50.69batch/s, loss=0.5201]
+Epoch [80/100], Train Loss: 0.6439, Train Acc: 0.9392
+Epoch [80/100], Val Loss: 0.6685, Val Acc: 0.9306
+
+Epoch 81/100: 704/704 [00:13<00:00, 50.83batch/s, loss=0.9664]
+Epoch [81/100], Train Loss: 0.6334, Train Acc: 0.9449
+Epoch [81/100], Val Loss: 0.6404, Val Acc: 0.9424
+目前最好的模型已保存，准确率为：0.9424
+
+Epoch 82/100: 704/704 [00:13<00:00, 50.97batch/s, loss=0.9340]
+Epoch [82/100], Train Loss: 0.6298, Train Acc: 0.9450
+Epoch [82/100], Val Loss: 0.6410, Val Acc: 0.9402
+
+Epoch 83/100: 704/704 [00:13<00:00, 50.81batch/s, loss=0.7850]
+Epoch [83/100], Train Loss: 0.6198, Train Acc: 0.9498
+Epoch [83/100], Val Loss: 0.6389, Val Acc: 0.9422
+
+Epoch 84/100: 704/704 [00:13<00:00, 50.85batch/s, loss=0.5433]
+Epoch [84/100], Train Loss: 0.6141, Train Acc: 0.9522
+Epoch [84/100], Val Loss: 0.6424, Val Acc: 0.9376
+
+Epoch 85/100: 704/704 [00:13<00:00, 50.84batch/s, loss=0.5320]
+Epoch [85/100], Train Loss: 0.6035, Train Acc: 0.9571
+Epoch [85/100], Val Loss: 0.6305, Val Acc: 0.9462
+目前最好的模型已保存，准确率为：0.9462
+
+Epoch 86/100: 704/704 [00:13<00:00, 50.67batch/s, loss=0.8026]
+Epoch [86/100], Train Loss: 0.5946, Train Acc: 0.9610
+Epoch [86/100], Val Loss: 0.6280, Val Acc: 0.9466
+目前最好的模型已保存，准确率为：0.9466
+
+Epoch 87/100: 704/704 [00:13<00:00, 50.88batch/s, loss=0.7871]
+Epoch [87/100], Train Loss: 0.5879, Train Acc: 0.9641
+Epoch [87/100], Val Loss: 0.6379, Val Acc: 0.9450
+
+Epoch 88/100: 704/704 [00:13<00:00, 50.64batch/s, loss=1.4661]
+Epoch [88/100], Train Loss: 0.5856, Train Acc: 0.9647
+Epoch [88/100], Val Loss: 0.6215, Val Acc: 0.9510
+目前最好的模型已保存，准确率为：0.9510
+
+Epoch 89/100: 704/704 [00:13<00:00, 50.83batch/s, loss=0.8440]
+Epoch [89/100], Train Loss: 0.5746, Train Acc: 0.9704
+Epoch [89/100], Val Loss: 0.6197, Val Acc: 0.9510
+
+Epoch 90/100: 704/704 [00:13<00:00, 50.63batch/s, loss=0.9348]
+Epoch [90/100], Train Loss: 0.5673, Train Acc: 0.9727
+Epoch [90/100], Val Loss: 0.6176, Val Acc: 0.9518
+目前最好的模型已保存，准确率为：0.9518
+
+Epoch 91/100: 704/704 [00:13<00:00, 50.75batch/s, loss=0.5288]
+Epoch [91/100], Train Loss: 0.5653, Train Acc: 0.9736
+Epoch [91/100], Val Loss: 0.6099, Val Acc: 0.9564
+目前最好的模型已保存，准确率为：0.9564
+
+Epoch 92/100: 704/704 [00:13<00:00, 50.73batch/s, loss=0.6138]
+Epoch [92/100], Train Loss: 0.5586, Train Acc: 0.9771
+Epoch [92/100], Val Loss: 0.6106, Val Acc: 0.9526
+
+Epoch 93/100: 704/704 [00:13<00:00, 50.82batch/s, loss=0.5059]
+Epoch [93/100], Train Loss: 0.5570, Train Acc: 0.9776
+Epoch [93/100], Val Loss: 0.6087, Val Acc: 0.9568
+目前最好的模型已保存，准确率为：0.9568
+
+Epoch 94/100: 704/704 [00:13<00:00, 50.48batch/s, loss=0.5060]
+Epoch [94/100], Train Loss: 0.5520, Train Acc: 0.9796
+Epoch [94/100], Val Loss: 0.6070, Val Acc: 0.9552
+
+Epoch 95/100: 704/704 [00:13<00:00, 50.85batch/s, loss=0.5395]
+Epoch [95/100], Train Loss: 0.5491, Train Acc: 0.9803
+Epoch [95/100], Val Loss: 0.6037, Val Acc: 0.9578
+目前最好的模型已保存，准确率为：0.9578
+
+Epoch 96/100: 704/704 [00:13<00:00, 50.54batch/s, loss=0.5290]
+Epoch [96/100], Train Loss: 0.5452, Train Acc: 0.9825
+Epoch [96/100], Val Loss: 0.6037, Val Acc: 0.9566
+
+Epoch 97/100: 704/704 [00:13<00:00, 50.49batch/s, loss=0.7897]
+Epoch [97/100], Train Loss: 0.5463, Train Acc: 0.9817
+Epoch [97/100], Val Loss: 0.6000, Val Acc: 0.9580
+目前最好的模型已保存，准确率为：0.9580
+
+Epoch 98/100: 704/704 [00:13<00:00, 50.52batch/s, loss=1.2153]
+Epoch [98/100], Train Loss: 0.5441, Train Acc: 0.9829
+Epoch [98/100], Val Loss: 0.6002, Val Acc: 0.9610
+目前最好的模型已保存，准确率为：0.9610
+
+Epoch 99/100: 704/704 [00:13<00:00, 51.00batch/s, loss=0.6076]
+Epoch [99/100], Train Loss: 0.5439, Train Acc: 0.9829
+Epoch [99/100], Val Loss: 0.5986, Val Acc: 0.9600
+
+Epoch 100/100: 704/704 [00:14<00:00, 49.92batch/s, loss=0.5656]
+Epoch [100/100], Train Loss: 0.5444, Train Acc: 0.9828
+Epoch [100/100], Val Loss: 0.6027, Val Acc: 0.9574
+
+-------------------------------训练循环结束，接下来是测试模型时间--------------------------------
+该模型的测试结果是:Test Loss: 0.6159, Test Acc: 0.9529
+----------------------------------------测试结束------------------------------------------
