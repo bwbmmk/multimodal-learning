@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <base href="../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="在本地浏览器中使用自己训练的 CIFAR-10 ResNet18 进行图片分类。">
+  <title>CIFAR-10 本地分类实验台</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f5c50'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23e8f3ef'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="vendor/ort.wasm.min.js"></script>
+  <script defer src="app.js?v=resnet18-1103"></script>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="CIFAR-10 本地分类实验台首页">
+        <span class="brand-mark" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </span>
+        <span>CIFAR-10 <strong>Lab</strong></span>
+      </a>
+      <div class="model-status is-loading" id="model-status" role="status" aria-live="polite">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="model-status-text">正在准备模型</span>
+      </div>
+    </header>
+
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">YOUR RESNET, RUNNING LOCALLY</p>
+        <h1 id="page-title">把一张图片，交给你的 ResNet。</h1>
+        <p class="intro-copy">这不是在线 API。你手写并训练的 ResNet18 已经转到浏览器里，选一张图，就能看见它如何给出答案。</p>
+      </div>
+      <div class="intro-side">
+        <dl class="model-facts" aria-label="模型信息">
+          <div><dt>参数量</dt><dd>11.17 M</dd></div>
+          <div><dt>输入尺寸</dt><dd>32 × 32</dd></div>
+          <div><dt>测试准确率</dt><dd>93.91%</dd></div>
+        </dl>
+        <aside class="phone-access" id="phone-access" hidden>
+          <div class="phone-qr"><img id="phone-qr" alt="手机访问二维码"></div>
+          <div class="phone-access-text">
+            <strong>手机上打开</strong>
+            <p>手机连同一个 Wi-Fi，扫码就能用。</p>
+            <code id="phone-url">—</code>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <div class="workbench">
+      <section class="panel input-panel" aria-labelledby="input-title">
+        <div class="section-heading">
+          <span class="step-number">01</span>
+          <div>
+            <h2 id="input-title">选择一张图片</h2>
+            <p>使用 CIFAR-10 示例，或者试试自己的图片。</p>
+          </div>
+        </div>
+
+        <label class="drop-zone" id="drop-zone" for="file-input">
+          <input id="file-input" type="file" accept="image/*">
+          <span class="upload-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="drop-title">点击选择图片</span>
+          <span class="drop-note">电脑上也可以直接拖进来 · 图片不会离开本机</span>
+        </label>
+        <p class="field-error" id="file-error" role="alert" hidden></p>
+
+        <fieldset class="resize-options">
+          <legend>非正方形图片如何处理</legend>
+          <label><input type="radio" name="resize-mode" value="crop" checked><span>中心裁剪</span><small>保持比例，推荐</small></label>
+          <label><input type="radio" name="resize-mode" value="stretch"><span>直接拉伸</span><small>可能改变形状</small></label>
+        </fieldset>
+
+        <div class="preview-block" id="preview-block" hidden>
+          <div class="preview-title">
+            <h3>模型实际看到的图片</h3>
+            <span id="file-name"></span>
+          </div>
+          <div class="preview-grid">
+            <figure>
+              <div class="image-frame original-frame"><img id="original-preview" alt="待分类的原始图片"></div>
+              <figcaption>原始图片</figcaption>
+            </figure>
+            <div class="preview-arrow" aria-hidden="true">→</div>
+            <figure>
+              <div class="image-frame tensor-frame"><canvas id="tensor-preview" width="32" height="32" aria-label="缩放后的32乘32模型输入"></canvas></div>
+              <figcaption>32 × 32 输入</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="samples-section">
+          <div class="samples-heading">
+            <h3>从测试集选一张</h3>
+            <span>10 个类别</span>
+          </div>
+          <div class="sample-grid" id="sample-grid" aria-label="CIFAR-10 示例图片">
+            <div class="samples-placeholder">正在读取示例图片…</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel result-panel" aria-labelledby="result-title">
+        <div class="section-heading">
+          <span class="step-number">02</span>
+          <div>
+            <h2 id="result-title">查看模型判断</h2>
+            <p>输出 10 个类别的分数，并列出前 5 名。</p>
+          </div>
+        </div>
+
+        <div class="prediction-card is-empty" id="prediction-card" aria-live="polite">
+          <div class="prediction-placeholder" id="prediction-placeholder">
+            <span class="placeholder-grid" aria-hidden="true"></span>
+            <p>模型加载后，会自动分类第一张示例图。</p>
+          </div>
+          <div class="prediction-content" id="prediction-content" hidden>
+            <p class="prediction-label">模型认为它是</p>
+            <h3 id="predicted-class">—</h3>
+            <p class="predicted-english" id="predicted-english">—</p>
+            <div class="confidence-line">
+              <span>置信度</span>
+              <strong id="predicted-confidence">—</strong>
+            </div>
+          </div>
+          <div class="prediction-loading" id="prediction-loading" hidden>
+            <span class="loader" aria-hidden="true"></span>
+            <span>正在计算 10 个类别的分数…</span>
+          </div>
+        </div>
+
+        <div class="sample-truth" id="sample-truth" hidden></div>
+
+        <div class="ranking-block">
+          <div class="ranking-heading">
+            <h3>Top-5 预测</h3>
+            <span id="inference-time">尚未推理</span>
+          </div>
+          <div class="ranking-list" id="ranking-list">
+            <div class="ranking-empty">等待图片输入</div>
+          </div>
+        </div>
+
+        <div class="local-note">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.9 8.1 7 10 4.1-1.9 7-5.4 7-10V6l-7-3Z" stroke="currentColor" stroke-width="1.5"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p><strong>推理完全在本地进行。</strong>图片只进入当前浏览器内存，不会上传，也不会保存。</p>
+        </div>
+
+        <div class="limitation-note">
+          <strong>试试可以，但别把它当成万物识别器。</strong>
+          <p>它只学过飞机、汽车、鸟、猫、鹿、狗、青蛙、马、船和卡车。其他图片也会被强行分到其中最相似的一类。</p>
+        </div>
+      </section>
+    </div>
+
+    <details class="process-details">
+      <summary>看看图片是怎样变成 <code>[1, 3, 32, 32]</code> 的</summary>
+      <div class="process-content">
+        <ol>
+          <li><strong>调整尺寸：</strong>中心裁剪或直接拉伸为 32 × 32 像素。</li>
+          <li><strong>读取 RGB：</strong>每个像素取出 R、G、B 三个 0～255 的数值。</li>
+          <li><strong>转换为张量：</strong>先除以 255，再执行 <code>(x - 0.5) / 0.5</code>。</li>
+          <li><strong>调整排列：</strong>从按像素排列转成 CHW，即 3 个通道 × 32 行 × 32 列。</li>
+          <li><strong>增加批次维：</strong>最终形状为 <code>[1, 3, 32, 32]</code>，送入 ONNX 模型。</li>
+        </ol>
+        <p>网页中的预处理与训练代码里的 <code>ToTensor()</code> 和 <code>Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])</code> 对应。</p>
+      </div>
+    </details>
+
+    <footer>
+      <span>CIFAR-10 · ResNet18 · ONNX Runtime Web</span>
+      <span>本地实验版本</span>
+    </footer>
+  </main>
+<pre id="verification-result">验证中…</pre><script src="verification/check.js"></script></body>
+</html>

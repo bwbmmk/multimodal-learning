@@ -174,7 +174,7 @@ def evaluate(model, data_loader, criterion,device):
     return total_loss / total, correct / total
 
 best_val_acc=0.0
-best_model_path=f'cifar10_best_model_{datetime.now():%m%d_%H%M}.pth'
+best_model_path=f'cifar10_cnn_best_model_{datetime.now():%m%d_%H%M}.pth'
 
 for epoch in range(epochs):
     net.train()
@@ -224,3 +224,5 @@ print(f'该模型的测试结果是:Test Loss: {test_loss_acc:.4f}, Test Acc: {t
 
 
 print('----------------------------------------测试结束------------------------------------------')
+
+
