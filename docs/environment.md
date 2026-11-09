@@ -64,7 +64,7 @@ Python 默认把所有第三方包装进同一个全局目录，于是会出现�
 | PyTorch | 2.11.0+cu128（torchvision 0.20.1 系列 / torchaudio 配套） |
 | 显卡 | NVIDIA GeForce RTX 5060 Laptop GPU（Blackwell，sm_120） |
 | 显卡驱动 | 617.14（CUDA UMD 13.4） |
-| 项目目录 | `"C:\Users\<用户名>\Desktop\pytorch" |
+| 项目目录 | `C:\Users\<用户名>\Desktop\pytorch\multimodal-learning` |
 | 执行策略 | PowerShell `CurrentUser = RemoteSigned` |
 
 ---
