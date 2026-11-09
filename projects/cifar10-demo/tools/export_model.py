@@ -25,11 +25,10 @@ CLASSES = [
 
 
 def load_model_definition():
-    # 仓库结构与原本地学习目录都支持；只导入模型，绝不导入会启动训练的脚本。
+    # 只导入模型定义，绝不导入会启动训练的脚本。
     project_dir = Path(__file__).resolve().parents[2]
     candidates = [
-        project_dir / "resnet18" / "model.py",
-        project_dir / "CIFAR-10" / "resnet_model.py",
+        project_dir / "resnet18" / "model_resnet18.py",
     ]
     for path in candidates:
         if path.is_file():
@@ -37,7 +36,7 @@ def load_model_definition():
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
             return module.ResNet18()
-    raise FileNotFoundError("找不到 ResNet 模型定义，请保留 projects/resnet18/model.py")
+    raise FileNotFoundError("找不到 ResNet 模型定义，请保留 projects/resnet18/model_resnet18.py")
 
 
 def main():

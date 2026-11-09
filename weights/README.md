@@ -18,7 +18,7 @@ CIFAR-10 的实验版本经过了多次结构调整，文件保留原始时间�
 
 `cifar10/cifar10_resnet_best_model_1103_2241.pth`：11,173,962 参数，第 48 轮最佳验证 94.80%，测试 93.91%，loss 0.2212。随机初始化训练，无 ImageNet 预训练。SHA256：`b95de7c4e694f62b4ffa88e7fcc812128b7a2d2ee45f70a66ff98fe48f26f739`。
 
-必须匹配 [ResNet 模型定义](../projects/resnet18/model.py) 加载，不能使用历史 CNN 的 `Net`。网页端使用同源权重导出的 `projects/cifar10-demo/model.onnx`，不是直接读取 `.pth`。
+必须匹配 [ResNet 模型定义](../projects/resnet18/model_resnet18.py) 加载，不能使用历史 CNN 的 `Net`。注意：当前模型文件里捷径属性名是 `shortcut`，而本权重保存的是 `shoutcut` 键名，加载前需把键名里的 `shoutcut` 替换成 `shortcut`。网页端使用同源权重导出的 `projects/cifar10-demo/model.onnx`，不是直接读取 `.pth`。
 
 ## 加载方式
 

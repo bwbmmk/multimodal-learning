@@ -50,7 +50,7 @@ python tools/check_env.py
 ```bash
 python projects/mnist/train.py
 python projects/cifar10/train.py
-python projects/resnet18/train.py
+python projects/resnet18/CIFAR-10_resnet18_train.py
 ```
 
 训练脚本仍保留学习时的数据路径，例如 `D:/ai/cifar10_data/`，换机器前需要修改 `path`。新训练产生的权重保存到运行时当前目录。代表性已训练权重位于 [weights](weights/README.md)。

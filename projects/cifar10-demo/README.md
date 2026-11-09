@@ -117,7 +117,7 @@ py -m pip install qrcode
 python projects/cifar10-demo/tools/export_model.py --weights weights/cifar10/cifar10_resnet_best_model_1103_2241.pth --data-root D:/ai/cifar10_data --output projects/cifar10-demo --best-epoch 48 --validation-accuracy 0.948 --reported-test-accuracy 0.9391
 ```
 
-导出脚本只导入 `projects/resnet18/model.py`，不会启动训练。原本地目录也支持 `CIFAR-10/resnet_model.py`。换成后续新权重时，应填写对应的真实指标，不能沿用本次参数；这些指标参数也可以省略。
+导出脚本只导入 `projects/resnet18/model_resnet18.py`，不会启动训练。换成后续新权重时，应填写对应的真实指标，不能沿用本次参数；这些指标参数也可以省略。
 
 元数据记录模型内容哈希、字节数、checkpoint 哈希和导出时的测试复评。前端以内容哈希区分模型缓存，`samples.json` 使用 `no-store`，HTML 的应用脚本 URL 同步版本。
 

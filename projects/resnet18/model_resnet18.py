@@ -28,10 +28,10 @@ class basicblock(torch.nn.Module):
         self.bn2=torch.nn.BatchNorm2d(outchannels)
 
 
-        self.shoutcut=torch.nn.Sequential()
+        self.shortcut=torch.nn.Sequential()
         #nn.Sequential()是一个有序的容器，里面的模块会按照传入的顺序依次执行。
         if stride!=1 or inchannels!=outchannels:
-            self.shoutcut=torch.nn.Sequential(
+            self.shortcut=torch.nn.Sequential(
                 torch.nn.Conv2d(inchannels,outchannels,kernel_size=1,stride=stride,bias=False),
                 torch.nn.BatchNorm2d(outchannels)
             )
@@ -40,7 +40,7 @@ class basicblock(torch.nn.Module):
 
 
     def forward(self,x):
-        identity=self.shoutcut(x)
+        identity=self.shortcut(x)
         #放在前面，先把残差连接的x做完，后面再做主分支的卷积，后面x会改变。
 
         x=self.conv1(x)

@@ -4,17 +4,16 @@
 
 ## 文件
 
-- `model.py`：从学习脚本抽出模型定义，保留 checkpoint 使用的 `basicblock` 和 `shoutcut` 名称；可导入，不会训练。
-- `train.py`：原训练流程增加主入口，使用上述模型定义。未重新训练，也未修改本次结果对应的超参数。
-- `CIFAR-10_resnet.py`：本地原始单文件版（模型定义 + 训练流程写在一起，带完整学习注释，模型名已改为 `shortcut`）。模块级会直接启动训练，只作学习记录，不用于导入。
+- `model_resnet18.py`：模型定义（`basicblock` + `ResNet` + `ResNet18()`），可导入，不会触发训练。
+- `CIFAR-10_resnet18_train.py`：训练脚本（数据管道、混合精度、checkpoint），有 `if __name__ == "__main__"` 主入口保护。
 - `training-log.txt`：本次原始训练输出。
 - `metrics.csv`：从原日志提取的 50 轮指标。
 
 ```bash
-python projects/resnet18/train.py
+python projects/resnet18/CIFAR-10_resnet18_train.py
 ```
 
-数据路径为 `D:/ai/cifar10_data/`，换机器前修改 `path`。导入模型时可将本目录加入模块路径，执行 `from model import ResNet18`。模型为 CIFAR 输入改造版，不等同于 torchvision 的 ImageNet 标准入口；本次没有预训练权重。
+数据路径为 `D:/ai/cifar10_data/`，换机器前修改 `path`。导入模型时可将本目录加入模块路径，执行 `from model_resnet18 import ResNet18`。注意：捷径属性名是 `shortcut`，与已发布旧权重里的 `shoutcut` 键名不一致，加载旧权重需要先做键名映射。模型为 CIFAR 输入改造版，不等同于 torchvision 的 ImageNet 标准入口；本次没有预训练权重。
 
 ## 结果和配置
 
