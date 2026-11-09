@@ -89,7 +89,7 @@ weights/           代表性训练权重
 - [学习路线](docs/learning-roadmap.md)
 - [学习过程记录](docs/learning-journal.md)
 - [CIFAR-10 历史实验](docs/cifar10-experiments.md)
-- [环境说明](docs/environment.md)
+- [环境说明](docs/environment.md) / [环境配置原始笔记](docs/environment-notes.md)
 - [浏览器部署记录](docs/cifar10-web-demo.md)
 - [MNIST 原理](docs/mnist-notes.md) / [踩坑记录](docs/mnist-troubleshooting.md)
 

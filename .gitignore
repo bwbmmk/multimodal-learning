@@ -27,4 +27,6 @@ Thumbs.db
 
 # 编辑器
 .idea/
-.vscode/
+.vscode/*
+# 只保留共享的 VSCode 配置
+!.vscode/settings.json

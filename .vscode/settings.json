@@ -1,0 +1,11 @@
+{
+  "python.defaultInterpreterPath": "D:\\anaconda3\\envs\\pytorch_env\\python.exe",
+  "python.terminal.activateEnvironment": true,
+  "python.analysis.extraPaths": [],
+  "python-envs.defaultEnvManager": "ms-python.python:conda",
+  "python-envs.defaultPackageManager": "ms-python.python:conda",
+  "code-runner.executorMap": {
+    "python": "D:\\anaconda3\\envs\\pytorch_env\\python.exe -u"
+  },
+  "python.analysis.autoImportCompletions": true
+}
