@@ -10,7 +10,7 @@
 | --- | --- | --- |
 | MNIST 手写数字识别 | 已完成 | 测试准确率 99.26% |
 | CIFAR-10 CNN 三轮实验 | 已完成 | 最佳验证 89.86%，测试 89.22% |
-| 手写 CIFAR ResNet18，从头训练 | 已完成 | **第 48 轮最佳验证 94.80%，测试 93.91%** |
+| 手写 CIFAR ResNet18，从头训练 | 已完成 | 50 轮基线测试 93.91%；100 轮改进版**验证 96.10%、测试 95.29%** |
 | 浏览器与手机演示 | 已更新为 ResNet18 | ONNX + WASM，本地推理，输入 32×32 |
 | ImageNet 预训练模型的冻结与微调 | 待完成 | 区分从头训练和迁移学习 |
 | CLIP 图文检索 | 待完成 | 真实图文配对、检索评测、错误分析 |
@@ -24,19 +24,29 @@
 | CIFAR-10 baseline | 4 层 CNN，无增强/BN/Dropout | 75.28% | 74.85% |
 | CIFAR-10 regularized | 增强、BN、Dropout、AdamW | 82.54% | 81.85% |
 | CIFAR-10 extended | 6 层 CNN，50 轮，余弦退火 | 89.86% | 89.22% |
-| **CIFAR-10 ResNet18** | **手写残差块，SGD，50 轮，余弦退火** | **94.80%** | **93.91%** |
+| CIFAR-10 ResNet18（基线） | 手写残差块，SGD，50 轮，余弦退火 | 94.80% | 93.91% |
+| **CIFAR-10 ResNet18（改进）** | **100 轮，标签平滑 0.1，RandomErasing，真实 mean/std，AMP** | **96.10%** | **95.29%** |
 
-最新实验保留 32×32 RGB 输入，入口是 3×3、stride=1，没有入口 MaxPool；四组残差块数量为 `[2,2,2,2]`，使用全局平均池化和 10 类分类层。参数量 **11,173,962**，随机初始化、全部参数参与训练，没有加载 ImageNet 权重，也没有使用标签平滑。
+两轮 ResNet 实验都保留 32×32 RGB 输入，入口是 3×3、stride=1，没有入口 MaxPool；四组残差块数量为 `[2,2,2,2]`，使用全局平均池化和 10 类分类层。参数量 **11,173,962**，随机初始化、全部参数参与训练，没有加载 ImageNet 权重。
+
+基线（50 轮）配置：
 
 - 数据划分：45,000 训练 / 5,000 验证 / 10,000 测试。
 - 训练：随机裁剪、水平翻转；验证和测试不做随机增强。
-- 优化：SGD，`lr=0.1`、`momentum=0.9`、`weight_decay=5e-4`；余弦退火 50 轮，训练 batch size 128。
+- 优化：SGD，`lr=0.1`、`momentum=0.9`、`weight_decay=5e-4`；余弦退火 50 轮，batch size 128。
 - 第 48 轮验证损失 0.2019，验证准确率 94.80%；加载该轮权重后测试损失 **0.2212**、准确率 **93.91%**。
 - 末期训练准确率约 99.85%，存在泛化差距；但第 40→50 轮验证损失仍从 0.2413 降至 0.2015，没有持续恶化的证据。
 
-相对旧 CNN，测试准确率提高 4.69 个百分点。但网络、优化器和批量大小等同时改变，不能把全部增益归因于残差连接。以上是单次实验，不是多随机种子统计。固定了数据划分种子，尚未固定全部训练随机性。
+2026-11-10 追加了一轮 100 epoch 改进实验，在上表基础上启用标签平滑 0.1、RandomErasing、CIFAR-10 真实 mean/std、AMP，batch size 改为 64：
 
-原始输出和逐轮指标见 [ResNet 项目](projects/resnet18/README.md)、[训练日志](projects/resnet18/training-log.txt)、[指标 CSV](projects/resnet18/metrics.csv)。
+- 第 98 轮最佳验证 **96.10%**（loss 0.6027），加载该轮后测试 **95.29%**（loss 0.6159）。
+- 标签平滑会改变 loss 口径（即使全对也有约 0.4 的下限），因此 `0.6027 / 0.6159` 不能与基线的 `0.2019 / 0.2212` 直接比较；能横向比的是准确率。
+- 相对基线测试提高 1.38 个百分点，但轮数、损失函数、增强、归一化、精度、batch size 同时改变，**不能归因到单一技巧**。
+- 逐轮记录与解读见 [CIFAR-10 实验记录](docs/cifar10-experiments.md) 实验五。
+
+相对旧 CNN，ResNet 基线测试提高 4.69 个百分点；以上都是单次实验，不是多随机种子统计。
+
+原始输出和逐轮指标见 [ResNet 项目](projects/resnet18/README.md)、[训练日志](projects/resnet18/training-log.txt)、[指标 CSV](projects/resnet18/metrics.csv)（均为 50 轮基线）。
 
 ## 运行
 
@@ -89,13 +99,15 @@ weights/           代表性训练权重
 - [学习路线](docs/learning-roadmap.md)
 - [学习过程记录](docs/learning-journal.md)
 - [CIFAR-10 历史实验](docs/cifar10-experiments.md)
+- [ResNet18 结构笔记](docs/resnet18-notes.md)
+- [训练流程与技巧笔记](docs/training-notes.md)
 - [环境说明](docs/environment.md) / [环境配置原始笔记](docs/environment-notes.md)
 - [浏览器部署记录](docs/cifar10-web-demo.md)
 - [MNIST 原理](docs/mnist-notes.md) / [踩坑记录](docs/mnist-troubleshooting.md)
 
 ## 下一步
 
-1. 分析错误样本；标签平滑仅作可选单变量对照，尚未实现或验证收益。
+1. 分析错误样本；标签平滑已随 100 轮实验启用，但与轮数、增强、AMP 同时改动，尚未做单变量消融。
 2. 学习预训练模型的冻结与微调，核对输入预处理与可训练参数。
 3. 做 CLIP 文本搜图：固定评测集、报告检索指标、分析失败案例。
 4. 基础并行学习 Python、数据结构算法、线性代数与 Linux/Git。先做一个可解释、可复现的项目，再扩展新方向。
